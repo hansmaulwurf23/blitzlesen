@@ -20,27 +20,34 @@ Wörter kehren regelmäßig wieder.
 
 <table>
 <tr>
-<td width="25%"><img src="screenshots/01-start.png" alt="Startbildschirm"></td>
-<td width="25%"><img src="screenshots/02-countdown.png" alt="Countdown"></td>
-<td width="25%"><img src="screenshots/03-karte.png" alt="Wortkarte"></td>
-<td width="25%"><img src="screenshots/04-zeit-um.png" alt="Zeit um"></td>
+<td width="50%"><img src="screenshots/01-start.png" alt="Startbildschirm"></td>
+<td width="50%"><img src="screenshots/02-countdown.png" alt="Countdown"></td>
 </tr>
 <tr>
 <td><b>Start:</b> die beiden Stapel, wie viele Wörter noch neu sind, und der Rekord.</td>
 <td><b>Countdown:</b> „3, 2, 1, Los!“, dann läuft die Minute.</td>
-<td><b>Karte:</b> großes Wort, darunter Grün und Gelb. Die Karte fliegt auf ihren Stapel, die
-nächste springt herein.</td>
+</tr>
+<tr>
+<td width="50%"><img src="screenshots/03-karte.png" alt="Wortkarte"></td>
+<td width="50%"><img src="screenshots/04-zeit-um.png" alt="Zeit um"></td>
+</tr>
+<tr>
+<td><b>Karte:</b> großes Wort, darunter Grün und Gelb. Die Karte fliegt auf ihren Stapel, die nächste springt herein.</td>
 <td><b>Zeit um:</b> Das angefangene Wort darf noch zu Ende gelesen werden.</td>
 </tr>
 <tr>
-<td><img src="screenshots/05-ergebnis.png" alt="Ergebnis"></td>
-<td><img src="screenshots/06-bestenliste.png" alt="Bestenliste"></td>
-<td><img src="screenshots/07-stapel.png" alt="Stapel Hakt noch"></td>
-<td><img src="screenshots/08-about.png" alt="Über die App"></td>
+<td width="50%"><img src="screenshots/05-ergebnis.png" alt="Ergebnis"></td>
+<td width="50%"><img src="screenshots/06-bestenliste.png" alt="Bestenliste"></td>
 </tr>
 <tr>
 <td><b>Ergebnis:</b> wie viele Wörter, davon grün und gelb, und jedes Wort mit seiner Lesezeit.</td>
 <td><b>Bestenliste:</b> alle Runden, die meisten Wörter oben.</td>
+</tr>
+<tr>
+<td width="50%"><img src="screenshots/07-stapel.png" alt="Stapel Hakt noch"></td>
+<td width="50%"><img src="screenshots/08-about.png" alt="Über die App"></td>
+</tr>
+<tr>
 <td><b>Stapel:</b> welche Wörter gerade wo liegen, mit durchschnittlicher Lesezeit.</td>
 <td><b>Über die App:</b> der Hinweis auf die Kartei und die Wortliste.</td>
 </tr>
@@ -56,6 +63,14 @@ nächste springt herein.</td>
 
 Die Grundidee aus der Anleitung der Kartei – kurz, regelmäßig und mit Erfolg üben, sichere und
 unsichere Wörter getrennt halten, Bekanntes an späteren Tagen wiederholen – bleibt dieselbe.
+
+## Ausprobieren
+
+Auf einem Android-Handy (ab Version 8) die APK-Datei vom
+[neuesten Release](https://gitlab.noisebleed.de/pub/lesen/-/releases/permalink/latest) herunterladen
+und öffnen. Android fragt einmal, ob Apps aus dieser Quelle installiert werden dürfen, und warnt
+eventuell, weil die App nicht aus dem Play Store kommt; beides lässt sich bestätigen. Für iPhones
+gibt es die App nicht.
 
 ## Herkunft und Rechte
 
