@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/leaderboard"
+        android:icon="@drawable/ic_trophy"
+        android:title="@string/leaderboard"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/words"
+        android:title="@string/words"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/dark_theme"
+        android:checkable="true"
+        android:title="@string/dark_theme"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/export"
+        android:title="@string/export"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/import_"
+        android:title="@string/import_"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/check_update"
+        android:title="@string/check_update"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/about"
+        android:title="@string/about"
+        app:showAsAction="never" />
+
+</menu>

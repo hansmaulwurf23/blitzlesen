@@ -1,0 +1,84 @@
+<resources>
+    <string name="app_name">Lesen</string>
+
+    <string name="headline">Blitzlesen</string>
+    <string name="tagline">Wie viele Wörter schaffst du in einer Minute?</string>
+    <string name="pile_good">Kann ich</string>
+    <string name="pile_practice">Hakt noch</string>
+    <plurals name="new_words">
+        <item quantity="one">%1$d Wort hast du noch nie gesehen</item>
+        <item quantity="other">%1$d Wörter hast du noch nie gesehen</item>
+    </plurals>
+    <string name="all_words_known">Alle 100 Wörter schon einmal gelesen!</string>
+    <string name="record_none">Noch kein Rekord – leg los!</string>
+    <string name="record">Rekord: %1$d Wörter</string>
+    <string name="start">Los geht\'s!</string>
+    <string name="words">Wörter</string>
+    <string name="leaderboard">Bestenliste</string>
+    <string name="about">About</string>
+    <string name="dark_theme">Dunkles Design</string>
+    <!-- Absichtlich englisch und nicht übersetzt: so vom Autor gewünscht. -->
+    <string name="about_built_by">Built by Martin and Claude with ❤️</string>
+    <string name="about_version">Version: %1$s (%2$s)</string>
+
+    <string name="countdown_go">Los!</string>
+    <string name="rate_good">Kann ich!</string>
+    <string name="rate_practice">Hakt noch</string>
+    <string name="time_up">Zeit um! Lies das Wort noch zu Ende.</string>
+    <string name="abort_title">Aufhören?</string>
+    <string name="abort_text">Die angefangene Runde zählt nicht und kommt nicht auf die Stapel.</string>
+    <string name="abort_confirm">Aufhören</string>
+    <string name="abort_continue">Weiterlesen</string>
+
+    <string name="result_title_great">Super gemacht!</string>
+    <string name="result_title_good">Gut gemacht!</string>
+    <string name="result_title_practice">Weiter üben!</string>
+    <string name="result_words_label">Wörter in einer Minute</string>
+    <string name="result_new_record">Neuer Rekord!</string>
+    <string name="result_rank">Platz %1$d in der Bestenliste</string>
+    <string name="result_fastest">Am schnellsten: %1$s (%2$s)</string>
+    <string name="result_save_failed">Runde konnte nicht gespeichert werden: %1$s</string>
+    <string name="to_leaderboard">Bestenliste</string>
+    <string name="play_again">Nochmal</string>
+
+    <plurals name="leaderboard_summary">
+        <item quantity="one">%1$d Runde · %2$d Wörter gelesen · %3$d %% grün</item>
+        <item quantity="other">%1$d Runden · %2$d Wörter gelesen · %3$d %% grün</item>
+    </plurals>
+    <string name="leaderboard_empty">Noch keine Runden. Los geht\'s!</string>
+    <string name="round_total">%1$d Wörter</string>
+    <string name="round_split">%1$d grün · %2$d gelb</string>
+    <string name="export">Fortschritt exportieren</string>
+    <string name="import_">Fortschritt importieren</string>
+    <string name="export_done">Fortschritt exportiert</string>
+    <string name="export_failed">Export fehlgeschlagen: %1$s</string>
+    <plurals name="import_done">
+        <item quantity="one">%1$d Runde importiert</item>
+        <item quantity="other">%1$d Runden importiert</item>
+    </plurals>
+    <string name="import_failed">Import fehlgeschlagen: %1$s</string>
+    <string name="no_file_picker">Auf diesem Gerät lassen sich keine Dateien auswählen.</string>
+
+    <string name="filter_good">Kann ich (%1$d)</string>
+    <string name="filter_practice">Hakt noch (%1$d)</string>
+    <string name="filter_new">Neu (%1$d)</string>
+    <string name="words_empty">Hier liegt noch kein Wort.</string>
+    <string name="word_detail">Ø %1$s · %2$d×</string>
+    <string name="word_detail_text">%1$d-mal gelesen, davon %2$d-mal grün.\nDurchschnitt der letzten Male: %3$s</string>
+    <string name="word_never">Noch nie dran gewesen.</string>
+
+    <string name="close">Schließen</string>
+    <string name="back">Zurück</string>
+
+    <string name="check_update">Nach Update suchen</string>
+    <string name="update_checking">Suche nach Updates …</string>
+    <string name="update_none">Lesen ist aktuell (Version %1$s)</string>
+    <string name="update_failed">Update-Suche fehlgeschlagen: %1$s</string>
+    <string name="update_not_allowed">In diesem Profil lassen sich keine Apps installieren.</string>
+    <string name="update_available_title">Update verfügbar</string>
+    <string name="update_available_text">Version %1$s ist bereit (installiert ist %2$s). Bestenliste und Stapel bleiben erhalten.</string>
+    <string name="update_install">Installieren</string>
+    <string name="update_later">Später</string>
+    <string name="update_allow_source">Bitte erlauben, dass Lesen Updates installieren darf, dann zurückkehren.</string>
+    <string name="update_install_failed">Update fehlgeschlagen: %1$s</string>
+</resources>

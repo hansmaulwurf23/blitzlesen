@@ -1,0 +1,32 @@
+<resources>
+    <!-- Helles Design; die dunklen Gegenstücke stehen in values-night/colors.xml. -->
+    <color name="bg">#FFFDF8F0</color>
+    <color name="surface">#FFFFFFFF</color>
+    <color name="text_primary">#FF26262E</color>
+    <color name="text_secondary">#FF6B6B76</color>
+    <color name="divider">#FFE6E0D6</color>
+
+    <color name="accent">#FF1E88E5</color>
+
+    <!-- Die beiden Stapel: grün "konnte ich schon lesen", gelb "hakte noch etwas". In beiden
+         Designs gleich, nur die hinteren Karten der Stapel passen sich an. -->
+    <color name="good">#FF43A047</color>
+    <color name="practice">#FFF5B400</color>
+    <!-- Auf Gelb ist weiße Schrift schlecht lesbar. -->
+    <color name="on_practice">#FF3A2E00</color>
+    <color name="good_back">#FFA5D6A7</color>
+    <color name="practice_back">#FFFFE08A</color>
+    <color name="new_word">#FF9E9AA6</color>
+
+    <color name="card_border">#FFE0DAD0</color>
+
+    <color name="highlight">#FFFFF3C4</color>
+    <color name="gold">#FFF2B705</color>
+    <color name="silver">#FFA7AFB7</color>
+    <color name="bronze">#FFC77B3B</color>
+
+    <color name="dialog_bg">#FFFFFFFF</color>
+    <color name="dialog_border">#FFD6CFC3</color>
+
+    <color name="launcher_bg">#FFFDF8F0</color>
+</resources>

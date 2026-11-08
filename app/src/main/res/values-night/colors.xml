@@ -1,0 +1,20 @@
+<resources>
+    <!-- Dunkles Design: Hintergründe, Text und die hinteren Stapelkarten ändern sich; Grün und Gelb
+         bleiben dieselben wie im hellen Design. -->
+    <color name="bg">#FF15161C</color>
+    <color name="surface">#FF22232B</color>
+    <color name="text_primary">#FFF2F2F5</color>
+    <color name="text_secondary">#FFA2A2AE</color>
+    <color name="divider">#FF363742</color>
+
+    <color name="good_back">#FF2E5E32</color>
+    <color name="practice_back">#FF6B5410</color>
+    <color name="new_word">#FF6E6E7A</color>
+
+    <color name="card_border">#FF3A3B46</color>
+
+    <color name="highlight">#FF4A3F12</color>
+
+    <color name="dialog_bg">#FF22232B</color>
+    <color name="dialog_border">#FF5A5B68</color>
+</resources>

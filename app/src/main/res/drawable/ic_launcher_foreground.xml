@@ -1,0 +1,15 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Zwei Karteikarten im sicheren Bereich des adaptiven Icons: hinten gelb ("hakt noch"),
+         vorne grün ("kann ich") mit einem Blitz für Blitzlesen. -->
+    <group android:pivotX="54" android:pivotY="54" android:rotation="-12">
+        <path android:fillColor="#FFF5B400" android:pathData="M36,38h34a5,5 0,0 1,5,5v22a5,5 0,0 1,-5,5h-34a5,5 0,0 1,-5,-5v-22a5,5 0,0 1,5,-5z" />
+    </group>
+    <group android:pivotX="54" android:pivotY="54" android:rotation="6">
+        <path android:fillColor="#FF43A047" android:pathData="M38,40h34a5,5 0,0 1,5,5v22a5,5 0,0 1,-5,5h-34a5,5 0,0 1,-5,-5v-22a5,5 0,0 1,5,-5z" />
+        <path android:fillColor="#FFFFFFFF" android:pathData="M58,44l-12,15h8l-4,11l13,-16h-8z" />
+    </group>
+</vector>
