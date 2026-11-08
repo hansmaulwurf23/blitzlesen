@@ -56,7 +56,8 @@ aber für keinen Stapel.
 
 `words/Words` enthält die 100 Häufigkeitswörter aus *Grundwortschatz für Berlin – Planungshilfe für
 den Rechtschreibunterricht* (Fassung 2025, S. 22–23), alphabetisch, „Zeit“ als Nomen groß. Die
-Auswahl folgt der Wortkartei „Blitzlesen – 100 häufige Wörter“.
+Auswahl und die Idee mit den zwei Stapeln stammen aus der Wortkartei „Blitzlesen – 100 häufige
+Wörter“ von Die Lernheldin (@die.lernheldin); darauf verweist auch der About-Dialog.
 
 ## Technik
 

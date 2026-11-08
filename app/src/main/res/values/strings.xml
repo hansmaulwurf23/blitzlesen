@@ -19,6 +19,7 @@
     <string name="dark_theme">Dunkles Design</string>
     <!-- Absichtlich englisch und nicht übersetzt: so vom Autor gewünscht. -->
     <string name="about_built_by">Built by Martin and Claude with ❤️</string>
+    <string name="about_based_on">Basierend auf der Wortkartei „Blitzlesen – 100 häufige Wörter“ von Die Lernheldin (@die.lernheldin). Wortliste aus dem Grundwortschatz für Berlin (Fassung 2025).</string>
     <string name="about_version">Version: %1$s (%2$s)</string>
 
     <string name="countdown_go">Los!</string>

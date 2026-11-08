@@ -40,8 +40,8 @@ android {
         applicationId "de.noisebleed.lesen"
         minSdk 26
         targetSdk 34
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.1"
         buildConfigField 'String', 'GIT_SHA', "\"${gitSha}\""
         // Selbst-Update: GitLab-API des öffentlichen Projekts pub/lesen. Über die ID statt den
         // Pfad, damit ein Umzug in eine andere Gruppe ausgelieferte Apps nicht abhängt.
