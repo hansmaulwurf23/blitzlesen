@@ -9,6 +9,9 @@
         <item name="colorSurface">@color/surface</item>
         <item name="colorOnSurface">@color/text_primary</item>
         <item name="colorOnSurfaceVariant">@color/text_secondary</item>
+        <!-- Material 3 tönt erhöhte Flächen mit der Akzentfarbe; Karteikarten sollen aber weiß
+             (bzw. im dunklen Design neutral grau) bleiben wie Papier. -->
+        <item name="elevationOverlayEnabled">false</item>
         <item name="android:statusBarColor">@color/bg</item>
         <item name="android:navigationBarColor">@color/bg</item>
         <item name="android:windowLightStatusBar">@bool/light_system_bars</item>

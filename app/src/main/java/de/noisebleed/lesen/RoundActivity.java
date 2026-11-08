@@ -40,6 +40,11 @@ public class RoundActivity extends AppCompatActivity {
 
     public static final int SECONDS = 60;
     private static final long TICK_MS = 100;
+    /**
+     * So lange nach dem Aufdecken zählt kein Tipp: sonst bewertet ein versehentlicher Doppeltipp die
+     * nächste Karte, bevor man sie überhaupt gesehen hat.
+     */
+    private static final long MIN_SHOW_MS = 350;
 
     private enum Phase { COUNTDOWN, PLAYING, ANIMATING, PAUSED, DONE }
 
@@ -49,6 +54,7 @@ public class RoundActivity extends AppCompatActivity {
     private Round round;
     private Phase phase = Phase.PAUSED;
     private boolean abortDialogOpen;
+    private long cardShownAt;
 
     private View card;
     private TextView word;
@@ -178,6 +184,7 @@ public class RoundActivity extends AppCompatActivity {
     // ---------------------------------------------------------------- Karten
 
     private void showCard(String text) {
+        cardShownAt = SystemClock.elapsedRealtime();
         word.setText(text);
         card.setVisibility(View.VISIBLE);
         card.setTranslationX(0);
@@ -191,10 +198,10 @@ public class RoundActivity extends AppCompatActivity {
     }
 
     private void rate(View button, boolean good) {
-        if (phase != Phase.PLAYING || round.current() == null) {
+        long now = SystemClock.elapsedRealtime();
+        if (phase != Phase.PLAYING || round.current() == null || now - cardShownAt < MIN_SHOW_MS) {
             return;
         }
-        long now = SystemClock.elapsedRealtime();
         round.answer(good, now);
         haptic(button);
         updateCounts();
