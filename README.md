@@ -5,6 +5,8 @@ zufällige Karteikarten. Eine Runde dauert eine Minute; nach jeder Karte tippt m
 ich schon lesen“) oder **gelb** („hakte noch etwas“). Daraus entstehen die zwei Stapel, dazu kommen
 die Lesezeit je Wort und eine Bestenliste.
 
+Eine bebilderte Kurzbeschreibung steht in [`docs/README.md`](docs/README.md).
+
 ## Bedienung
 
 - **Startbildschirm:** die beiden Stapel *Kann ich* (grün) und *Hakt noch* (gelb) mit der Anzahl
