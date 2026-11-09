@@ -126,3 +126,9 @@ damit liegt eine zweite Kopie des Schlüssels bei GitHub.
 # versionCode und versionName in app/build.gradle anheben, committen
 git tag -a v1.4 -m "Lesen 1.4" -m "- Was sich geändert hat" && git push origin main v1.4
 ```
+
+## Lizenz
+
+Der Code steht unter der [MIT-Lizenz](LICENSE). Idee, Wortauswahl und Übungsweise stammen aus der
+Wortkartei „Blitzlesen – 100 häufige Wörter“ von Die Lernheldin (@die.lernheldin), die
+Veröffentlichung hier geschieht mit ihrem Einverständnis.
