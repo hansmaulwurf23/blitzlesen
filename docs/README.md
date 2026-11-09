@@ -67,7 +67,7 @@ unsichere Wörter getrennt halten, Bekanntes an späteren Tagen wiederholen – 
 ## Ausprobieren
 
 Auf einem Android-Handy (ab Version 8) die APK-Datei vom
-[neuesten Release](https://gitlab.noisebleed.de/pub/lesen/-/releases/permalink/latest) herunterladen
+[neuesten Release](https://github.com/hansmaulwurf23/blitzlesen/releases/latest) herunterladen
 und öffnen. Android fragt einmal, ob Apps aus dieser Quelle installiert werden dürfen, und warnt
 eventuell, weil die App nicht aus dem Play Store kommt; beides lässt sich bestätigen. Für iPhones
 gibt es die App nicht.
@@ -84,5 +84,4 @@ Die App ist kostenlos, hat keine Werbung und braucht kein Konto. Gespeichert wir
 selbst; ins Internet geht sie lediglich, um nach einer neuen Version zu suchen. Sie läuft auf Android
 ab Version 8 und ist nicht im Play Store.
 
-Bisher wird die App nur privat genutzt. Eine Veröffentlichung, etwa als offenes Projekt auf GitHub,
-kommt nur mit dem Einverständnis von Die Lernheldin infrage.
+Veröffentlicht mit dem freundlichen Einverständnis von Die Lernheldin.

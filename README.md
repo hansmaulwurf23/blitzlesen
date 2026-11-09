@@ -85,23 +85,22 @@ weg.
 ## Selbst-Update
 
 Wie bei Zahlen (`update/AppUpdater`): beim Start höchstens alle 6 Stunden und über *Menü → Nach
-Update suchen* fragt die App das neueste Release bei der GitLab-API ab, lädt das APK im Hintergrund,
-prüft die SHA-256 aus der `update.json` und bietet die Installation an. **Runden und Stapel bleiben
+Update suchen* fragt die App das neueste Release bei der GitHub-API ab
+(`/repos/hansmaulwurf23/blitzlesen/releases/latest`), lädt das APK im Hintergrund, prüft die SHA-256
+aus der angehängten `update.json` und bietet die Installation an. **Runden und Stapel bleiben
 erhalten**, solange derselbe Signaturschlüssel verwendet wird und `versionCode` mit jedem Release
 steigt.
 
-Die API-Adresse steht in `app/build.gradle` (`UPDATE_API`) und nutzt die Projekt-ID 63 statt des
-Pfads, damit ein Umzug des Projekts ausgelieferte Apps nicht abhängt.
+Die API-Adresse steht in `app/build.gradle` (`UPDATE_API`). Ein Umbenennen des Repos leitet GitHub
+weiter; wird es gelöscht oder privat, finden ausgelieferte Apps keine Updates mehr.
+
+Bis Version 1.2 lag das Projekt auf gitlab.noisebleed.de (`pub/lesen`, Projekt-ID 63), und die Apps
+fragten dort. Version 1.3 ist deshalb zusätzlich noch dort erschienen: Wer sie installiert, sucht ab
+dann auf GitHub. Das GitLab-Projekt ist archiviert, seine Releases bleiben abrufbar.
 
 ## Download
 
-Signierte APKs hängen an den [Releases](https://gitlab.noisebleed.de/pub/lesen/-/releases),
-Direktlink einer Version (ohne Anmeldung):
-
-```
-https://gitlab.noisebleed.de/api/v4/projects/63/packages/generic/lesen/<version>/Lesen-<version>.apk
-```
-
+Signierte APKs hängen an den [Releases](https://github.com/hansmaulwurf23/blitzlesen/releases).
 Zum Installieren die Datei auf dem Handy öffnen. Android fragt einmalig nach der Erlaubnis, Apps aus
 dieser Quelle zu installieren (bei Samsung pro App, z. B. für *Chrome* oder *Eigene Dateien*).
 
@@ -114,14 +113,16 @@ Fehlt der Schlüssel, bleibt das Release-APK unsigniert.
 Ohne diesen Schlüssel lässt sich kein Update über eine installierte Version schieben — Verlust
 bedeutet, dass alle Nutzer erst deinstallieren (und den Fortschritt vorher exportieren) müssten.
 
-`.gitlab-ci.yml` baut, signiert und veröffentlicht, sobald ein Tag `v<Ziffer>` gepusht wird, und legt
-die `update.json` neben das APK. Einrichtung (erledigt, wie bei Zahlen): öffentliches Projekt
-[pub/lesen](https://gitlab.noisebleed.de/pub/lesen), Runner
-„Focus App Runner“ (Tag `docker`), geschütztes Tag-Muster `v*`, geschützte Variablen
-`ANDROID_KEYSTORE_B64` (File, `base64 -w0 lesen-release.jks`), `ANDROID_KEYSTORE_PASSWORD`
-(maskiert), `ANDROID_KEY_ALIAS` (`lesen`), `ANDROID_KEY_PASSWORD` (maskiert).
+`.github/workflows/release.yml` testet, baut, signiert und veröffentlicht, sobald ein Tag `v<Ziffer>`
+gepusht wird, und hängt `update.json` neben das APK. Der Text des annotierten Tags (ohne die erste
+Zeile) wird zur Release-Beschreibung. Zwei Prüfungen brechen absichtlich ab, statt ein kaputtes
+Release zu veröffentlichen: ein unsigniertes APK und ein `versionName`, der nicht zum Tag passt.
+
+Die Repository-Secrets `ANDROID_KEYSTORE_B64` (`base64 -w0 lesen-release.jks`),
+`ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS` (`lesen`) und `ANDROID_KEY_PASSWORD` sind gesetzt;
+damit liegt eine zweite Kopie des Schlüssels bei GitHub.
 
 ```bash
 # versionCode und versionName in app/build.gradle anheben, committen
-git tag -a v1.1 -m "Lesen 1.1" && git push origin main && git push origin v1.1
+git tag -a v1.4 -m "Lesen 1.4" -m "- Was sich geändert hat" && git push origin main v1.4
 ```
