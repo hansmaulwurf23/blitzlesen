@@ -17,11 +17,11 @@ jobs:
   release:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # Fest auf die Kombination gepinnt, gegen die auch lokal gebaut wird: JDK 17, build-tools
       # 34.0.0, Plattform android-34.
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '17'
