@@ -79,7 +79,7 @@ public class HistoryTest {
 
     @Test(expected = org.json.JSONException.class)
     public void rejectsForeignFiles() throws Exception {
-        History.fromJson(new JSONObject("{\"format\":\"zahlen-bestenliste\",\"games\":[]}"));
+        History.fromJson(new JSONObject("{\"format\":\"andere-app\",\"games\":[]}"));
     }
 
     @Test

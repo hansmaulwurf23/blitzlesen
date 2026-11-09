@@ -63,8 +63,8 @@ Wörter“ von Die Lernheldin (@die.lernheldin); darauf verweist auch der About-
 
 ## Technik
 
-- Java, Android Views (kein Compose), Material 3, minSdk 26 / targetSdk 34 — wie Zahlen und
-  Dingsbums. Keine Google-Play-Dienste.
+- Java, Android Views (kein Compose), Material 3, minSdk 26 / targetSdk 34. Keine
+  Google-Play-Dienste.
 - `game/Round`, `words/` und `stats/History` haben keine Android-Abhängigkeiten und sind in
   `RoundTest`, `PickerTest` und `HistoryTest` getestet.
 - Hochformat fest.
@@ -84,7 +84,7 @@ weg.
 
 ## Selbst-Update
 
-Wie bei Zahlen (`update/AppUpdater`): beim Start höchstens alle 6 Stunden und über *Menü → Nach
+`update/AppUpdater`: beim Start höchstens alle 6 Stunden und über *Menü → Nach
 Update suchen* fragt die App das neueste Release bei der GitHub-API ab
 (`/repos/hansmaulwurf23/blitzlesen/releases/latest`), lädt das APK im Hintergrund, prüft die SHA-256
 aus der angehängten `update.json` und bietet die Installation an. **Runden und Stapel bleiben
@@ -107,7 +107,7 @@ dieser Quelle zu installieren (bei Samsung pro App, z. B. für *Chrome* oder *Ei
 ## Release
 
 Signaturschlüssel und `keystore.properties` liegen **nicht im Repo**, sondern in
-`~/Documents/Android/own/lesen/` (wie bei Zahlen; abweichender Pfad über `-Plesen.signing=…`).
+`~/Documents/Android/own/lesen/` (abweichender Pfad über `-Plesen.signing=…`).
 Fehlt der Schlüssel, bleibt das Release-APK unsigniert.
 
 Ohne diesen Schlüssel lässt sich kein Update über eine installierte Version schieben — Verlust
