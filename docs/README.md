@@ -1,10 +1,12 @@
 # Blitzlesen als App
 
-Eine kleine Android-App, die die Wortkartei **„Blitzlesen – 100 häufige Wörter“ von
-[Die Lernheldin](https://www.instagram.com/die.lernheldin/)** aufs Handy bringt. Entstanden ist sie
-für den Hausgebrauch, damit ein Grundschulkind mit den Karten auch unterwegs üben kann. Die Idee,
-die Wortauswahl und die Übungsweise mit den zwei Stapeln stammen aus der Kartei; die App setzt sie
-nur in eine spielerische Form um.
+Eine kleine Web-App (und Android-App), die die Wortkartei **„Blitzlesen – 100 häufige Wörter“ von
+[Die Lernheldin](https://www.instagram.com/die.lernheldin/)** aufs Handy, Tablet oder an den
+Computer bringt. Entstanden ist sie für den Hausgebrauch, damit ein Grundschulkind mit den Karten
+auch unterwegs üben kann. Die Idee, die Wortauswahl und die Übungsweise mit den zwei Stapeln stammen
+aus der Kartei; die App setzt sie nur in eine spielerische Form um.
+
+**Direkt im Browser ausprobieren:** <https://hansmaulwurf23.github.io/blitzlesen/>
 
 ## So funktioniert's
 
@@ -60,17 +62,24 @@ Wörter kehren regelmäßig wieder.
 - **Bestenliste** je Runde: Wörter insgesamt, davon grün und gelb.
 - Ein Wort liegt immer auf dem Stapel seiner **letzten** Bewertung. Hakt ein sicheres Wort später
   wieder, wandert es zurück zu den Übungswörtern.
+- **Mehrere Wortlisten** (in der Web-App): weitere Listen lassen sich ergänzen und auf dem
+  Startbildschirm umschalten, jede mit eigener Bestenliste.
 
 Die Grundidee aus der Anleitung der Kartei – kurz, regelmäßig und mit Erfolg üben, sichere und
 unsichere Wörter getrennt halten, Bekanntes an späteren Tagen wiederholen – bleibt dieselbe.
 
 ## Ausprobieren
 
-Auf einem Android-Handy (ab Version 8) die APK-Datei vom
+**Im Browser**, auf jedem Gerät: <https://hansmaulwurf23.github.io/blitzlesen/> öffnen, fertig.
+Wer möchte, legt die Seite wie eine App auf den Startbildschirm: auf Android in Chrome über *Menü →
+App installieren* (oder *Zum Startbildschirm hinzufügen*), auf dem iPhone in Safari über *Teilen →
+Zum Home-Bildschirm*. Danach funktioniert sie auch ohne Internet.
+
+**Als Android-App** (ab Android 8): die APK-Datei vom
 [neuesten Release](https://github.com/hansmaulwurf23/blitzlesen/releases/latest) herunterladen
 und öffnen. Android fragt einmal, ob Apps aus dieser Quelle installiert werden dürfen, und warnt
-eventuell, weil die App nicht aus dem Play Store kommt; beides lässt sich bestätigen. Für iPhones
-gibt es die App nicht.
+eventuell, weil die App nicht aus dem Play Store kommt; beides lässt sich bestätigen. Die
+Android-App kennt nur die eine Wortliste.
 
 ## Herkunft und Rechte
 
@@ -78,10 +87,12 @@ gibt es die App nicht.
   den Rechtschreibunterricht* (Fassung 2025), in der Auswahl der Kartei.
 - **Idee und Übungsweise:** Wortkartei „Blitzlesen – 100 häufige Wörter“ von Die Lernheldin.
 - **Nicht übernommen:** Gestaltung, Texte und Karten-Layout der Kartei. Die App verwendet ihre eigene
-  Gestaltung und die Systemschrift des Handys.
+  Gestaltung und die Systemschrift des Geräts.
 
-Die App ist kostenlos, hat keine Werbung und braucht kein Konto. Gespeichert wird nur auf dem Handy
-selbst; ins Internet geht sie lediglich, um nach einer neuen Version zu suchen. Sie läuft auf Android
-ab Version 8 und ist nicht im Play Store.
+Die App ist kostenlos, hat keine Werbung und braucht kein Konto. Gespeichert wird nur auf dem Gerät
+selbst: in der Web-App im Browser (Browserdaten löschen löscht also auch die Runden; über *Menü →
+Fortschritt exportieren* lässt sich eine Sicherung anlegen), in der Android-App im App-Speicher.
+Die Web-App lädt nur sich selbst und die Wortlisten, die Android-App sucht nach neuen Versionen.
+Keine von beiden ist im Play Store.
 
 Veröffentlicht mit dem freundlichen Einverständnis von Die Lernheldin.
