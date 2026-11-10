@@ -9,9 +9,15 @@
         <item quantity="one">%1$d Wort hast du noch nie gesehen</item>
         <item quantity="other">%1$d Wörter hast du noch nie gesehen</item>
     </plurals>
-    <string name="all_words_known">Alle 100 Wörter schon einmal gelesen!</string>
+    <string name="all_words_known">Alle %1$d Wörter schon einmal gelesen!</string>
+    <string name="word_list">Wortliste</string>
+    <string name="word_list_change">Wortliste wechseln</string>
+    <string name="word_list_count">%1$d Wörter</string>
     <string name="record_none">Noch kein Rekord – leg los!</string>
-    <string name="record">Rekord: %1$d Wörter</string>
+    <plurals name="record">
+        <item quantity="one">Rekord: %1$d Wort</item>
+        <item quantity="other">Rekord: %1$d Wörter</item>
+    </plurals>
     <string name="start">Los geht\'s!</string>
     <string name="words">Wörter</string>
     <string name="leaderboard">Bestenliste</string>
@@ -20,7 +26,7 @@
     <!-- Absichtlich englisch und nicht übersetzt: so vom Autor gewünscht. -->
     <string name="about_built_by">Built by Martin and Claude with ❤️</string>
     <string name="about_based_on">Basierend auf der Wortkartei „Blitzlesen – 100 häufige Wörter“ von Die Lernheldin\n@die.lernheldin\n\nWortliste aus dem Grundwortschatz für Berlin (Fassung 2025).</string>
-    <string name="about_web">Auch im Browser, mit mehr Wortlisten:\nhansmaulwurf23.github.io/blitzlesen</string>
+    <string name="about_web">Auch im Browser:\nhansmaulwurf23.github.io/blitzlesen</string>
     <string name="no_browser">Kein Browser gefunden.</string>
     <string name="about_version">Version: %1$s (%2$s)</string>
 
@@ -37,6 +43,7 @@
     <string name="result_title_good">Gut gemacht!</string>
     <string name="result_title_practice">Weiter üben!</string>
     <string name="result_words_label">Wörter in einer Minute</string>
+    <string name="result_words_label_list">Wörter in einer Minute · %1$s</string>
     <string name="result_new_record">Neuer Rekord!</string>
     <string name="result_rank">Platz %1$d in der Bestenliste</string>
     <string name="result_fastest">Am schnellsten: %1$s (%2$s)</string>
@@ -49,7 +56,10 @@
         <item quantity="other">%1$d Runden · %2$d Wörter gelesen · %3$d %% grün</item>
     </plurals>
     <string name="leaderboard_empty">Noch keine Runden. Los geht\'s!</string>
-    <string name="round_total">%1$d Wörter</string>
+    <plurals name="round_total">
+        <item quantity="one">%1$d Wort</item>
+        <item quantity="other">%1$d Wörter</item>
+    </plurals>
     <string name="round_split">%1$d grün · %2$d gelb</string>
     <string name="export">Fortschritt exportieren</string>
     <string name="import_">Fortschritt importieren</string>

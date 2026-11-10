@@ -40,12 +40,14 @@ android {
         applicationId "de.noisebleed.lesen"
         minSdk 26
         targetSdk 34
-        versionCode 5
-        versionName "1.4"
+        versionCode 6
+        versionName "1.5"
         buildConfigField 'String', 'GIT_SHA', "\"${gitSha}\""
         // Selbst-Update: GitHub-API des öffentlichen Repos hansmaulwurf23/blitzlesen. Ein Umbenennen
         // des Repos leitet GitHub weiter, ein Löschen hängt ausgelieferte Apps ab.
         buildConfigField 'String', 'UPDATE_API', '"https://api.github.com/repos/hansmaulwurf23/blitzlesen"'
+        // Die Web-App auf GitHub Pages (web/): About-Link und Quelle der Wortlisten (web/listen/).
+        buildConfigField 'String', 'WEB_URL', '"https://hansmaulwurf23.github.io/blitzlesen/"'
     }
 
     buildFeatures {

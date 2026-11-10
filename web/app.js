@@ -297,7 +297,7 @@ function startView() {
       <button class="record-card" id="record">
         ${icon('trophy')}
         <div>${best
-          ? `<b>Rekord: ${total(best)} Wörter</b><span>${good(best)} grün · ${practice(best)} gelb</span>`
+          ? `<b>Rekord: ${plural(total(best), 'Wort', 'Wörter')}</b><span>${good(best)} grün · ${practice(best)} gelb</span>`
           : '<b>Noch kein Rekord – leg los!</b>'}</div>
       </button>
     </div>
@@ -816,7 +816,7 @@ function leaderboardView(highlight) {
       <ol class="rounds">${sorted.map((r, i) => `
         <li class="${r.id === highlight ? 'highlight' : ''}" ${r.id === highlight ? 'id="highlight"' : ''}>
           <span class="place ${i < 3 ? `p${i + 1}` : ''}">${i + 1}</span>
-          <span class="what"><b>${total(r)} Wörter</b><span>${dateFormat.format(new Date(r.timestamp))}</span></span>
+          <span class="what"><b>${plural(total(r), 'Wort', 'Wörter')}</b><span>${dateFormat.format(new Date(r.timestamp))}</span></span>
           <span class="split"><span class="g">✓ ${good(r)}</span><span class="p">↻ ${practice(r)}</span></span>
         </li>`).join('')}</ol>
       <div class="storage-note">

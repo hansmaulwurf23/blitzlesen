@@ -4,6 +4,10 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,7 +19,9 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONException;
@@ -34,15 +40,14 @@ import de.noisebleed.lesen.stats.HistoryStore;
 import de.noisebleed.lesen.stats.RoundRecord;
 import de.noisebleed.lesen.update.AppUpdater;
 import de.noisebleed.lesen.words.Pile;
+import de.noisebleed.lesen.words.WordList;
+import de.noisebleed.lesen.words.WordLists;
 import de.noisebleed.lesen.words.WordStats;
-import de.noisebleed.lesen.words.Words;
 
 /** Startbildschirm: die beiden Stapel, der Rekord und der große Start-Knopf. */
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-    /** Die Web-App auf GitHub Pages, siehe web/ und .github/workflows/pages.yml. */
-    private static final String WEB_URL = "https://hansmaulwurf23.github.io/blitzlesen/";
 
     private View root;
 
@@ -68,12 +73,18 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.record_card).setOnClickListener(v ->
                 startActivity(new Intent(this, LeaderboardActivity.class)));
         findViewById(R.id.new_words).setOnClickListener(v -> openWords(Pile.NEW));
+        findViewById(R.id.word_list).setOnClickListener(v -> chooseList());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         refresh();
+        WordLists.checkIfDue(this, () -> {
+            if (!isFinishing() && !isDestroyed()) {
+                refresh();
+            }
+        });
         if (installAfterPermission) {
             installAfterPermission = !AppUpdater.install(this);
             return;
@@ -91,7 +102,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void refresh() {
         History history = HistoryStore.load(this);
-        Map<String, WordStats> stats = history.wordStats(Words.all());
+        WordList list = WordLists.current(this);
+        boolean choice = WordLists.hasChoice(this);
+        MaterialButton listButton = findViewById(R.id.word_list);
+        listButton.setText(choice ? list.title + "  ▾" : list.title);
+        listButton.setClickable(choice);
+        invalidateOptionsMenu();
+
+        Map<String, WordStats> stats = history.wordStats(list.words);
         int good = 0, practice = 0, fresh = 0;
         for (WordStats s : stats.values()) {
             switch (s.pile()) {
@@ -111,9 +129,9 @@ public class MainActivity extends AppCompatActivity {
         TextView newWords = findViewById(R.id.new_words);
         newWords.setText(fresh > 0
                 ? getResources().getQuantityString(R.plurals.new_words, fresh, fresh)
-                : getString(R.string.all_words_known));
+                : getString(R.string.all_words_known, list.words.size()));
 
-        List<RoundRecord> ranked = history.ranked();
+        List<RoundRecord> ranked = history.ranked(list.id);
         TextView record = findViewById(R.id.record);
         TextView split = findViewById(R.id.record_split);
         if (ranked.isEmpty()) {
@@ -121,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
             split.setVisibility(View.GONE);
         } else {
             RoundRecord best = ranked.get(0);
-            record.setText(getString(R.string.record, best.total()));
+            record.setText(getResources().getQuantityString(R.plurals.record, best.total(), best.total()));
             split.setText(getString(R.string.round_split, best.good(), best.practice()));
             split.setVisibility(View.VISIBLE);
         }
@@ -137,7 +155,43 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         menu.findItem(R.id.dark_theme).setChecked(Settings.isDark(this));
+        menu.findItem(R.id.word_list).setVisible(WordLists.hasChoice(this));
         return true;
+    }
+
+    /** Auswahl der Wortliste: Titel, darunter klein Beschreibung und Anzahl Wörter. */
+    private void chooseList() {
+        List<WordList> lists = WordLists.all(this);
+        if (lists.size() < 2) {
+            return;
+        }
+        WordList current = WordLists.current(this);
+        CharSequence[] items = new CharSequence[lists.size()];
+        int checked = 0;
+        int secondary = ContextCompat.getColor(this, R.color.text_secondary);
+        for (int i = 0; i < lists.size(); i++) {
+            WordList l = lists.get(i);
+            String detail = (l.description.isEmpty() ? "" : l.description + " · ")
+                    + getString(R.string.word_list_count, l.words.size());
+            SpannableStringBuilder text = new SpannableStringBuilder(l.title).append('\n');
+            int start = text.length();
+            text.append(detail);
+            text.setSpan(new RelativeSizeSpan(0.8f), start, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            text.setSpan(new ForegroundColorSpan(secondary), start, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            items[i] = text;
+            if (l.id.equals(current.id)) {
+                checked = i;
+            }
+        }
+        Dialogs.builder(this)
+                .setTitle(R.string.word_list)
+                .setSingleChoiceItems(items, checked, (d, which) -> {
+                    WordLists.select(this, lists.get(which).id);
+                    d.dismiss();
+                    refresh();
+                })
+                .setNegativeButton(R.string.close, null)
+                .show();
     }
 
     @Override
@@ -149,6 +203,10 @@ public class MainActivity extends AppCompatActivity {
         }
         if (id == R.id.words) {
             openWords(Pile.PRACTICE);
+            return true;
+        }
+        if (id == R.id.word_list) {
+            chooseList();
             return true;
         }
         if (id == R.id.dark_theme) {
@@ -261,7 +319,7 @@ public class MainActivity extends AppCompatActivity {
         View content = getLayoutInflater().inflate(R.layout.dialog_about, null, false);
         content.findViewById(R.id.about_web).setOnClickListener(v -> {
             try {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(WEB_URL)));
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(BuildConfig.WEB_URL)));
             } catch (ActivityNotFoundException e) {
                 message(getString(R.string.no_browser));
             }

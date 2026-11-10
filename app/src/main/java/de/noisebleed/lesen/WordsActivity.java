@@ -25,8 +25,9 @@ import java.util.Map;
 
 import de.noisebleed.lesen.stats.HistoryStore;
 import de.noisebleed.lesen.words.Pile;
+import de.noisebleed.lesen.words.WordList;
+import de.noisebleed.lesen.words.WordLists;
 import de.noisebleed.lesen.words.WordStats;
-import de.noisebleed.lesen.words.Words;
 
 /** Was auf welchem Stapel liegt, je Wort mit durchschnittlicher Lesezeit. */
 public class WordsActivity extends AppCompatActivity {
@@ -56,7 +57,11 @@ public class WordsActivity extends AppCompatActivity {
             }
         }
 
-        stats = HistoryStore.load(this).wordStats(Words.all());
+        WordList wordList = WordLists.current(this);
+        if (WordLists.hasChoice(this)) {
+            toolbar.setSubtitle(wordList.title);
+        }
+        stats = HistoryStore.load(this).wordStats(wordList.words);
         empty = findViewById(R.id.empty);
         RecyclerView list = findViewById(R.id.words);
         list.setLayoutManager(new GridLayoutManager(this, 3));

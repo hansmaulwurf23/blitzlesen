@@ -8,7 +8,7 @@ die Lesezeit je Wort und eine Bestenliste.
 **In erster Linie eine Web-App:** <https://hansmaulwurf23.github.io/blitzlesen/> — ohne Anmeldung,
 alles bleibt im Browser, nach dem ersten Besuch auch offline, und auf dem Handy über *Zum
 Startbildschirm hinzufügen* bzw. *App installieren* wie eine App. Daneben gibt es weiterhin die
-Android-App (siehe unten), mit denselben Regeln, aber nur der einen Wortliste.
+Android-App (siehe unten), mit denselben Regeln und denselben Wortlisten.
 
 Eine bebilderte Kurzbeschreibung steht in [`docs/README.md`](docs/README.md).
 
@@ -17,7 +17,7 @@ Eine bebilderte Kurzbeschreibung steht in [`docs/README.md`](docs/README.md).
 - **Startbildschirm:** die gewählte Wortliste, die beiden Stapel *Kann ich* (grün) und *Hakt noch*
   (gelb) mit der Anzahl Wörter, darunter, wie viele Wörter noch nie dran waren, und der Rekord. Ein
   Tipp auf einen Stapel zeigt seine Wörter, ein Tipp auf den Rekord die Bestenliste, ein Tipp auf
-  die Wortliste wechselt sie (nur Web).
+  die Wortliste wechselt sie (sobald es mehr als eine gibt).
 - **Runde:** nach einem Countdown „3, 2, 1, Los!“ kommt eine Karte nach der anderen. Grün schickt
   die Karte nach links auf den grünen Stapel, gelb nach rechts auf den gelben; die nächste springt
   sofort herein. Ist die Minute um, darf die offene Karte noch zu Ende gelesen und bewertet werden.
@@ -103,11 +103,10 @@ und Bestenliste werden daraus berechnet und stimmen nach dem Import also auch. D
 }
 ```
 
-`list` schreibt nur die Web-App; fehlt es (Runden aus der Android-App), gilt
-`grundwortschatz-100`. Die Android-App liest Dateien mit `list` ohne Fehler, kennt aber keine
-Listen: Runden anderer Listen landen dort in ihrer einen Bestenliste, und beim nächsten Export aus
-der App fehlt ihr `list`. Solange es nur eine Liste gibt, ist das egal; mit mehreren sollte der
-Fortschritt nur noch vom Web in die App gehen, nicht zurück.
+Fehlt `list` (Runden aus der Android-App bis Version 1.4 oder von vor den Wortlisten), gilt
+`grundwortschatz-100`. Die App bis 1.4 liest Dateien mit `list` ohne Fehler, kennt aber keine
+Listen: Runden anderer Listen landen dort in ihrer einen Bestenliste, und beim nächsten Export
+fehlt ihr `list`. Ab 1.5 bleibt `list` in beide Richtungen erhalten.
 
 In der App liegt das im selben Format in `files/rounds.json` (privater App-Speicher), im Browser
 unter `lesen.runden` im `localStorage`. Das Wort selbst ist die Kennung; Wörter, die keine Liste mehr
@@ -119,11 +118,17 @@ Die erste Liste, `web/listen/grundwortschatz-100.json`, enthält die 100 Häufig
 *Grundwortschatz für Berlin – Planungshilfe für den Rechtschreibunterricht* (Fassung 2025,
 S. 22–23), alphabetisch, „Zeit“ als Nomen groß. Die Auswahl und die Idee mit den zwei Stapeln
 stammen aus der Wortkartei „Blitzlesen – 100 häufige Wörter“ von Die Lernheldin (@die.lernheldin);
-darauf verweist auch der About-Dialog. Die Android-App hat dieselben Wörter fest in `words/Words`.
+darauf verweist auch der About-Dialog. Die Android-App hat dieselben Wörter zusätzlich fest in
+`words/Words` eingebaut, damit sie ohne Internet und beim ersten Start funktioniert.
 
 **Neue Liste hinzufügen:** eine Datei `web/listen/<id>.json` anlegen und die `id` in
-`web/listen/index.json` eintragen (die Reihenfolge dort ist die Reihenfolge in der Auswahl). Mit
-mehr als einer Liste zeigt die Web-App den Umschalter mit Pfeil und *Menü → Wortliste wechseln*.
+`web/listen/index.json` eintragen (die Reihenfolge dort ist die Reihenfolge in der Auswahl), dann
+pushen. Mit mehr als einer Liste zeigen Web und App den Umschalter mit Pfeil und *Menü → Wortliste
+wechseln*. Ein App-Update ist dafür nicht nötig: Die Android-App (`words/WordLists`) holt beim
+Start, höchstens alle 30 Minuten, `listen/index.json` und die Listen von GitHub Pages und legt sie
+in `files/listen.json` ab; offline gelten die zuletzt geladenen. Bricht der Download ab, bleiben die
+bisherigen Listen; eine einzelne unlesbare Liste wird übersprungen. Verschwindet die gewählte Liste,
+nimmt die App die eingebaute.
 
 ```json
 {
@@ -144,12 +149,13 @@ mehr als einer Liste zeigt die Web-App den Umschalter mit Pfeil und *Menü → W
 
 ## Android-App
 
-Die ursprüngliche App, weiterhin gepflegt und mit Selbst-Update, aber nur mit der einen Wortliste. Der
-About-Dialog verlinkt die Web-App.
+Die ursprüngliche App, weiterhin gepflegt und mit Selbst-Update. Seit Version 1.5 mit denselben
+Wortlisten wie die Web-App (siehe oben), der About-Dialog verlinkt die Web-App. Die Adresse der
+Web-App steht in `app/build.gradle` (`WEB_URL`).
 
 - Java, Android Views (kein Compose), Material 3, minSdk 26 / targetSdk 34. Keine
   Google-Play-Dienste.
-- `game/Round`, `words/` und `stats/History` haben keine Android-Abhängigkeiten und sind in
+- `game/Round`, `words/` (außer `WordLists`) und `stats/History` haben keine Android-Abhängigkeiten und sind in
   `RoundTest`, `PickerTest` und `HistoryTest` getestet.
 - Hochformat fest.
 

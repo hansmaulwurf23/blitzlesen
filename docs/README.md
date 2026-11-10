@@ -62,7 +62,7 @@ Wörter kehren regelmäßig wieder.
 - **Bestenliste** je Runde: Wörter insgesamt, davon grün und gelb.
 - Ein Wort liegt immer auf dem Stapel seiner **letzten** Bewertung. Hakt ein sicheres Wort später
   wieder, wandert es zurück zu den Übungswörtern.
-- **Mehrere Wortlisten** (in der Web-App): weitere Listen lassen sich ergänzen und auf dem
+- **Mehrere Wortlisten:** weitere Listen lassen sich ergänzen und auf dem
   Startbildschirm umschalten, jede mit eigener Bestenliste.
 
 Die Grundidee aus der Anleitung der Kartei – kurz, regelmäßig und mit Erfolg üben, sichere und
@@ -78,8 +78,8 @@ Zum Home-Bildschirm*. Danach funktioniert sie auch ohne Internet.
 **Als Android-App** (ab Android 8): die APK-Datei vom
 [neuesten Release](https://github.com/hansmaulwurf23/blitzlesen/releases/latest) herunterladen
 und öffnen. Android fragt einmal, ob Apps aus dieser Quelle installiert werden dürfen, und warnt
-eventuell, weil die App nicht aus dem Play Store kommt; beides lässt sich bestätigen. Die
-Android-App kennt nur die eine Wortliste.
+eventuell, weil die App nicht aus dem Play Store kommt; beides lässt sich bestätigen. Neue
+Wortlisten kommen in der App ohne Update an.
 
 ## Herkunft und Rechte
 

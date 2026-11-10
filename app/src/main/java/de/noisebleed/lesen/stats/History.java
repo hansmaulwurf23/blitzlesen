@@ -55,29 +55,42 @@ public final class History {
         return null;
     }
 
-    public List<RoundRecord> ranked() {
-        List<RoundRecord> sorted = new ArrayList<>(rounds);
+    /**
+     * Bestenliste einer Wortliste. Jede Liste hat ihre eigene, weil Listen unterschiedlich schwer
+     * sind; Stapel dagegen zählen über alle Listen (siehe {@link #wordStats}).
+     */
+    public List<RoundRecord> ranked(String listId) {
+        List<RoundRecord> sorted = new ArrayList<>();
+        for (RoundRecord r : rounds) {
+            if (r.listId().equals(listId)) {
+                sorted.add(r);
+            }
+        }
         sorted.sort(RANKING);
         return sorted;
     }
 
-    /** Platz 1, 2, … in der Bestenliste. */
+    /** Platz 1, 2, … in der Bestenliste ihrer Wortliste. */
     public int rank(RoundRecord round) {
-        return ranked().indexOf(round) + 1;
+        return ranked(round.listId()).indexOf(round) + 1;
     }
 
-    /** Beste Runde vor dieser — null, wenn es die erste ist. Für "Neuer Rekord!". */
+    /** Beste andere Runde derselben Liste — null, wenn es die erste ist. Für "Neuer Rekord!". */
     public RoundRecord bestExcept(RoundRecord round) {
         RoundRecord best = null;
         for (RoundRecord r : rounds) {
-            if (r != round && (best == null || RANKING.compare(r, best) < 0)) {
+            if (r != round && r.listId().equals(round.listId())
+                    && (best == null || RANKING.compare(r, best) < 0)) {
                 best = r;
             }
         }
         return best;
     }
 
-    /** Verlauf je Wort, für jedes Wort aus words (auch nie gelesene), in dieser Reihenfolge. */
+    /**
+     * Verlauf je Wort, für jedes Wort aus words (auch nie gelesene), in dieser Reihenfolge. Gezählt
+     * wird über alle Wortlisten: Wer "und" in einer Liste kann, kann es auch in der nächsten.
+     */
     public Map<String, WordStats> wordStats(List<String> words) {
         Map<String, WordStats> stats = new LinkedHashMap<>();
         for (String w : words) {
@@ -134,11 +147,14 @@ public final class History {
                         .put("millis", a.millis)
                         .put("good", a.good));
             }
-            list.put(new JSONObject()
+            JSONObject round = new JSONObject()
                     .put("id", r.id)
                     .put("timestamp", r.timestamp)
-                    .put("seconds", r.seconds)
-                    .put("attempts", attempts));
+                    .put("seconds", r.seconds);
+            if (r.list != null) {
+                round.put("list", r.list);
+            }
+            list.put(round.put("attempts", attempts));
         }
         return new JSONObject()
                 .put("format", FORMAT)
@@ -163,8 +179,9 @@ public final class History {
                 JSONObject a = attemptsJson.getJSONObject(j);
                 attempts.add(new Attempt(a.getString("word"), a.getLong("millis"), a.getBoolean("good")));
             }
+            String listId = r.optString("list", "").trim();
             history.add(new RoundRecord(r.getString("id"), r.getLong("timestamp"),
-                    r.optInt("seconds", 60), attempts));
+                    r.optInt("seconds", 60), listId.isEmpty() ? null : listId, attempts));
         }
         return history;
     }

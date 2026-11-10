@@ -30,7 +30,8 @@ import de.noisebleed.lesen.stats.History;
 import de.noisebleed.lesen.stats.HistoryStore;
 import de.noisebleed.lesen.stats.RoundRecord;
 import de.noisebleed.lesen.words.Picker;
-import de.noisebleed.lesen.words.Words;
+import de.noisebleed.lesen.words.WordList;
+import de.noisebleed.lesen.words.WordLists;
 
 /**
  * Eine Minute Blitzlesen: zufällige Karten, nach jeder tippt man Grün ("kann ich") oder Gelb
@@ -52,6 +53,7 @@ public class RoundActivity extends AppCompatActivity {
     private final Random random = new Random();
 
     private Round round;
+    private WordList list;
     private Phase phase = Phase.PAUSED;
     private boolean abortDialogOpen;
     private long cardShownAt;
@@ -99,7 +101,8 @@ public class RoundActivity extends AppCompatActivity {
         findViewById(R.id.rate_practice).setOnClickListener(v -> rate(v, false));
 
         History history = HistoryStore.load(this);
-        Picker picker = new Picker(Words.all(), History.piles(history.wordStats(Words.all())), random);
+        list = WordLists.current(this);
+        Picker picker = new Picker(list.words, History.piles(history.wordStats(list.words)), random);
         round = new Round(SECONDS * 1000L, picker);
         updateCounts();
         updateTimer();
@@ -270,7 +273,7 @@ public class RoundActivity extends AppCompatActivity {
         phase = Phase.DONE;
         handler.removeCallbacksAndMessages(null);
         RoundRecord record = new RoundRecord(UUID.randomUUID().toString(), System.currentTimeMillis(),
-                SECONDS, new ArrayList<>(round.attempts()));
+                SECONDS, list.id, new ArrayList<>(round.attempts()));
         try {
             HistoryStore.add(this, record);
         } catch (IOException e) {

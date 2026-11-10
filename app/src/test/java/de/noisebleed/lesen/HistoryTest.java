@@ -2,12 +2,14 @@ package de.noisebleed.lesen;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertSame;
 
 import org.json.JSONObject;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +18,7 @@ import de.noisebleed.lesen.stats.Attempt;
 import de.noisebleed.lesen.stats.History;
 import de.noisebleed.lesen.stats.RoundRecord;
 import de.noisebleed.lesen.words.Pile;
+import de.noisebleed.lesen.words.WordList;
 import de.noisebleed.lesen.words.WordStats;
 import de.noisebleed.lesen.words.Words;
 
@@ -52,7 +55,7 @@ public class HistoryTest {
         h.add(c);
         h.add(a);
         h.add(b);
-        assertEquals(Arrays.asList(b, c, a, d), h.ranked());
+        assertEquals(Arrays.asList(b, c, a, d), h.ranked(Words.DEFAULT_ID));
         assertEquals(3, h.rank(a));
         assertSame(c, h.bestExcept(b));
         History single = new History();
@@ -87,5 +90,72 @@ public class HistoryTest {
         List<String> all = Words.all();
         assertEquals(100, all.size());
         assertEquals(100, new HashSet<>(all).size());
+    }
+
+    @Test
+    public void leaderboardPerListPilesAcrossLists() {
+        History h = new History();
+        // ohne Liste: von vor Version 1.5, gehört zur eingebauten
+        RoundRecord old = round("alt", 1, new Attempt("und", 900, true), new Attempt("am", 900, true),
+                new Attempt("an", 900, true));
+        RoundRecord other = new RoundRecord("neu", 2, 60, "tiere",
+                Arrays.asList(new Attempt("und", 1200, false)));
+        h.add(old);
+        h.add(other);
+        assertEquals(Collections.singletonList(old), h.ranked(Words.DEFAULT_ID));
+        assertEquals(Collections.singletonList(other), h.ranked("tiere"));
+        assertEquals(1, h.rank(other));
+        // Rekord nur innerhalb derselben Liste
+        assertNull(h.bestExcept(other));
+        // Stapel über alle Listen: zuletzt hakte "und"
+        assertEquals(Pile.PRACTICE, h.wordStats(Words.all()).get("und").pile());
+    }
+
+    @Test
+    public void listSurvivesJsonAndOldRoundsStayWithout() throws Exception {
+        History h = new History();
+        h.add(round("a", 1, new Attempt("so", 1, true)));
+        h.add(new RoundRecord("b", 2, 60, "tiere", Arrays.asList(new Attempt("Hund", 1, true))));
+        JSONObject json = h.toJson();
+        assertTrue(!json.getJSONArray("rounds").getJSONObject(0).has("list"));
+        History copy = History.fromJson(new JSONObject(json.toString()));
+        assertNull(copy.find("a").list);
+        assertEquals(Words.DEFAULT_ID, copy.find("a").listId());
+        assertEquals("tiere", copy.find("b").list);
+    }
+
+    @Test
+    public void wordListFromWebFormat() throws Exception {
+        WordList l = WordList.fromJson(new JSONObject(
+                "{\"id\":\"tiere\",\"title\":\"Tiere\",\"words\":[\"Hund\",\" Katze \",\"\",\"Hund\"]}"));
+        assertEquals("tiere", l.id);
+        assertEquals("Tiere", l.title);
+        assertEquals("", l.description);
+        assertEquals(Arrays.asList("Hund", "Katze"), l.words);
+        assertEquals(l.words, WordList.fromJson(new JSONObject(l.toJson().toString())).words);
+    }
+
+    @Test(expected = org.json.JSONException.class)
+    public void wordListWithoutWordsIsInvalid() throws Exception {
+        WordList.fromJson(new JSONObject("{\"id\":\"leer\",\"words\":[\" \"]}"));
+    }
+
+    @Test
+    public void builtInListIsAlwaysOffered() {
+        WordList builtIn = Words.builtIn();
+        WordList tiere = new WordList("tiere", "Tiere", "", Arrays.asList("Hund"));
+        WordList fixed = new WordList(Words.DEFAULT_ID, "Korrigiert", "", Arrays.asList("und"));
+
+        List<WordList> offline = WordList.withBuiltIn(Collections.emptyList(), builtIn);
+        assertEquals(Collections.singletonList(builtIn), offline);
+        // fehlt sie im Download, kommt sie nach vorne
+        assertEquals(Arrays.asList(builtIn, tiere), WordList.withBuiltIn(Arrays.asList(tiere), builtIn));
+        // eine geladene mit derselben id ersetzt sie, Reihenfolge wie im Index
+        assertEquals(Arrays.asList(tiere, fixed), WordList.withBuiltIn(Arrays.asList(tiere, fixed), builtIn));
+
+        List<WordList> lists = Arrays.asList(tiere, builtIn);
+        assertSame(tiere, WordList.find(lists, "tiere", Words.DEFAULT_ID));
+        assertSame(builtIn, WordList.find(lists, "gibt-es-nicht", Words.DEFAULT_ID));
+        assertSame(tiere, WordList.find(Collections.singletonList(tiere), "weg", Words.DEFAULT_ID));
     }
 }

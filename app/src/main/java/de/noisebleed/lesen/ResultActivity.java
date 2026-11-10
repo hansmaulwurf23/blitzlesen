@@ -18,6 +18,7 @@ import de.noisebleed.lesen.stats.Attempt;
 import de.noisebleed.lesen.stats.History;
 import de.noisebleed.lesen.stats.HistoryStore;
 import de.noisebleed.lesen.stats.RoundRecord;
+import de.noisebleed.lesen.words.WordLists;
 
 /** Nach der Runde: wie viele Wörter, wie viele grün und gelb, Rekord und alle Karten mit Zeit. */
 public class ResultActivity extends AppCompatActivity {
@@ -43,6 +44,11 @@ public class ResultActivity extends AppCompatActivity {
         double share = total == 0 ? 0 : (double) round.good() / total;
         ((TextView) findViewById(R.id.title)).setText(share >= 0.8 ? R.string.result_title_great
                 : share >= 0.5 ? R.string.result_title_good : R.string.result_title_practice);
+
+        if (WordLists.hasChoice(this)) {
+            ((TextView) findViewById(R.id.words_label)).setText(getString(R.string.result_words_label_list,
+                    WordLists.find(this, round.listId()).title));
+        }
 
         TextView totalView = findViewById(R.id.total);
         totalView.setText(String.valueOf(total));

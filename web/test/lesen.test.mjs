@@ -201,6 +201,8 @@ test('jede Liste im Index ist gültig und ohne doppelte Wörter', () => {
   assert.ok(index.lists.includes(DEFAULT_LIST));
   assert.equal(new Set(index.lists).size, index.lists.length);
   for (const id of index.lists) {
+    // Die Android-App (words/WordLists) lädt nur ids aus Kleinbuchstaben, Ziffern und Bindestrichen.
+    assert.match(id, /^[a-z0-9-]+$/, `id ${id}`);
     const list = readJson(`../listen/${id}.json`);
     assert.equal(list.id, id, `id in ${id}.json`);
     assert.ok(list.title, `Titel in ${id}.json`);

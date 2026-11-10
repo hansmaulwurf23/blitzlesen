@@ -25,6 +25,8 @@ import java.util.Locale;
 import de.noisebleed.lesen.stats.History;
 import de.noisebleed.lesen.stats.HistoryStore;
 import de.noisebleed.lesen.stats.RoundRecord;
+import de.noisebleed.lesen.words.WordList;
+import de.noisebleed.lesen.words.WordLists;
 
 /** Alle Runden, die meisten Wörter oben; bei Gleichstand zählen die grünen. */
 public class LeaderboardActivity extends AppCompatActivity {
@@ -40,7 +42,15 @@ public class LeaderboardActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> finish());
 
         String highlight = getIntent().getStringExtra(EXTRA_HIGHLIGHT);
-        List<RoundRecord> rounds = HistoryStore.load(this).ranked();
+        History history = HistoryStore.load(this);
+        // Die Liste der gerade gespielten Runde, sonst die gewählte.
+        RoundRecord highlighted = highlight != null ? history.find(highlight) : null;
+        WordList wordList = highlighted != null ? WordLists.find(this, highlighted.listId())
+                : WordLists.current(this);
+        if (WordLists.hasChoice(this)) {
+            toolbar.setSubtitle(wordList.title);
+        }
+        List<RoundRecord> rounds = history.ranked(highlighted != null ? highlighted.listId() : wordList.id);
 
         RecyclerView list = findViewById(R.id.rounds);
         list.setLayoutManager(new LinearLayoutManager(this));
@@ -106,7 +116,8 @@ public class LeaderboardActivity extends AppCompatActivity {
             rank.setTextColor(position < 3 ? Color.WHITE
                     : ContextCompat.getColor(LeaderboardActivity.this, R.color.text_primary));
 
-            ((TextView) view.findViewById(R.id.total)).setText(getString(R.string.round_total, round.total()));
+            ((TextView) view.findViewById(R.id.total)).setText(getResources().getQuantityString(R.plurals.round_total,
+                    round.total(), round.total()));
             ((TextView) view.findViewById(R.id.date)).setText(dateFormat.format(new Date(round.timestamp)));
             ((TextView) view.findViewById(R.id.good)).setText("✓ " + round.good());
             ((TextView) view.findViewById(R.id.practice)).setText("↻ " + round.practice());

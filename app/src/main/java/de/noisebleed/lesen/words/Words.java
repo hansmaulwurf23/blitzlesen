@@ -10,6 +10,10 @@ import java.util.List;
  *
  * Das Wort selbst ist die Kennung in gespeicherten Runden und im Export — ein Wort umzubenennen
  * heißt also, seinen Verlauf zu verlieren.
+ *
+ * Die eingebaute Liste, damit die App ohne Internet und beim ersten Start etwas hat. Dieselben Wörter
+ * stehen in web/listen/grundwortschatz-100.json (die Web-Tests prüfen das); weitere Listen lädt
+ * {@link WordLists} von der Web-App.
  */
 public final class Words {
 
@@ -25,7 +29,17 @@ public final class Words {
             "uns", "unter", "viel", "vom", "von", "vor", "war", "was", "welche", "wenn",
             "werden", "wie", "wieder", "wir", "wird", "wo", "Zeit", "zu", "zum", "zur"));
 
+    /** Id der eingebauten Liste; Runden ohne "list" (vor Version 1.5) gehören zu ihr. */
+    public static final String DEFAULT_ID = "grundwortschatz-100";
+
+    private static final WordList BUILT_IN = new WordList(DEFAULT_ID, "100 häufige Wörter",
+            "Die 100 häufigsten Wörter aus dem Grundwortschatz für Berlin", ALL);
+
     private Words() {
+    }
+
+    public static WordList builtIn() {
+        return BUILT_IN;
     }
 
     public static List<String> all() {
