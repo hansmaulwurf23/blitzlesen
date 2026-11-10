@@ -62,7 +62,8 @@ Format wie der Export unten), `lesen.liste` (gewählte Liste) und `lesen.design`
 Server, kein Konto und keine Analyse. Nach der ersten Runde bittet die Seite den Browser, die Daten
 dauerhaft aufzuheben (`navigator.storage.persist()`). Trotzdem gilt: Browserdaten löschen löscht
 auch die Runden, und jeder Browser und jedes Gerät hat seine eigenen. Für Sicherung und
-Gerätewechsel gibt es Export und Import im Menü. Auf dem iPhone sollte die Seite über *Teilen → Zum
+Gerätewechsel gibt es Export und Import im Menü; darauf weist auch ein Hinweis unter der Bestenliste
+hin, mit einem Knopf zum Sichern. Auf dem iPhone sollte die Seite über *Teilen → Zum
 Home-Bildschirm* installiert werden, sonst räumt Safari nach einigen Wochen ohne Besuch auf.
 
 Lokal ausprobieren und testen (Node 22 oder neuer):
@@ -143,7 +144,8 @@ mehr als einer Liste zeigt die Web-App den Umschalter mit Pfeil und *Menü → W
 
 ## Android-App
 
-Die ursprüngliche App, weiterhin gepflegt und mit Selbst-Update, aber nur mit der einen Wortliste.
+Die ursprüngliche App, weiterhin gepflegt und mit Selbst-Update, aber nur mit der einen Wortliste. Der
+About-Dialog verlinkt die Web-App.
 
 - Java, Android Views (kein Compose), Material 3, minSdk 26 / targetSdk 34. Keine
   Google-Play-Dienste.

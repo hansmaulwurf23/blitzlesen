@@ -41,6 +41,8 @@ import de.noisebleed.lesen.words.Words;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
+    /** Die Web-App auf GitHub Pages, siehe web/ und .github/workflows/pages.yml. */
+    private static final String WEB_URL = "https://hansmaulwurf23.github.io/blitzlesen/";
 
     private View root;
 
@@ -257,6 +259,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void showAbout() {
         View content = getLayoutInflater().inflate(R.layout.dialog_about, null, false);
+        content.findViewById(R.id.about_web).setOnClickListener(v -> {
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(WEB_URL)));
+            } catch (ActivityNotFoundException e) {
+                message(getString(R.string.no_browser));
+            }
+        });
         TextView version = content.findViewById(R.id.about_version);
         version.setText(getString(R.string.about_version,
                 BuildConfig.VERSION_NAME, BuildConfig.GIT_SHA));

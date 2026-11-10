@@ -818,10 +818,17 @@ function leaderboardView(highlight) {
           <span class="place ${i < 3 ? `p${i + 1}` : ''}">${i + 1}</span>
           <span class="what"><b>${total(r)} Wörter</b><span>${dateFormat.format(new Date(r.timestamp))}</span></span>
           <span class="split"><span class="g">✓ ${good(r)}</span><span class="p">↻ ${practice(r)}</span></span>
-        </li>`).join('')}</ol>`}
+        </li>`).join('')}</ol>
+      <div class="storage-note">
+        <p>Die Runden liegen nur in diesem Browser. Werden die Browserdaten gelöscht, oder räumt der
+        Browser selbst auf, ist die Bestenliste wieder leer.</p>
+        <button type="button" id="backup">Fortschritt sichern</button>
+      </div>`}
     </div>
   `);
   $('#back').onclick = goBack;
+  const backup = $('#backup');
+  if (backup) backup.onclick = exportRounds;
   $('#highlight')?.scrollIntoView({ block: 'center' });
   return {};
 }

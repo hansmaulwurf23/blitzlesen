@@ -381,6 +381,27 @@ button.front:active { filter: brightness(.95); }
 .rounds .split .g { color: var(--good); }
 .rounds .split .p { color: var(--practice); }
 
+.storage-note {
+  margin-top: 20px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px dashed var(--divider);
+  color: var(--text2);
+  font-size: 15px;
+  line-height: 1.4;
+}
+.storage-note p { margin: 0; }
+.storage-note button {
+  margin-top: 10px;
+  padding: 8px 16px;
+  border: 2px solid var(--accent);
+  border-radius: 999px;
+  background: none;
+  color: var(--accent);
+  font-size: 15px;
+  font-weight: 600;
+}
+
 /* ---------------------------------------------------------------- Wörter */
 
 .filter { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
