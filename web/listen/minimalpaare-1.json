@@ -1,0 +1,20 @@
+{
+  "id": "minimalpaare-1",
+  "title": "Minimalpaare 1",
+  "description": "Kurze, vertraute Wörter – leicht starten",
+  "source": "Minimalpaare zum Blitzlesen von Die Lernheldin (@die.lernheldin), Lesematerial aus ihrem Padlet",
+  "seconds": 120,
+  "words": [
+    "Haus", "Maus", "Laus", "Ball", "Fall", "Bett", "Fett", "Buch", "Tuch",
+    "Dach", "Fach", "Hund", "Mund", "Nase", "Hase", "Rose", "Hose", "Kuh",
+    "Schuh", "Mut", "Hut", "See", "Fee", "Kamm", "Lamm", "Baum", "Raum",
+    "Fisch", "Tisch", "Kuss", "Nuss", "Dose", "Wolle", "Rolle"
+  ],
+  "pairs": [
+    ["Haus", "Maus"], ["Maus", "Laus"], ["Ball", "Fall"], ["Bett", "Fett"],
+    ["Buch", "Tuch"], ["Dach", "Fach"], ["Hund", "Mund"], ["Nase", "Hase"],
+    ["Rose", "Hose"], ["Kuh", "Schuh"], ["Mut", "Hut"], ["See", "Fee"],
+    ["Kamm", "Lamm"], ["Baum", "Raum"], ["Fisch", "Tisch"], ["Kuss", "Nuss"],
+    ["Dose", "Rose"], ["Wolle", "Rolle"]
+  ]
+}

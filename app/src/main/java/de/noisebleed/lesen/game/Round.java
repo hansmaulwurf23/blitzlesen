@@ -30,6 +30,8 @@ public final class Round {
     private long runningSince = -1;
 
     private String current;
+    /** Bei Paaren: das Wort direkt davor, wenn current sein Gegenwort ist. */
+    private String partner;
     private String last;
     /** Laufzeit der Runde, als die aktuelle Karte aufgedeckt wurde. */
     private long shownAt;
@@ -93,6 +95,11 @@ public final class Round {
         return current;
     }
 
+    /** Bei Paaren: das erste Wort, wenn die aktuelle Karte sein Gegenwort ist, sonst null. */
+    public String partner() {
+        return partner;
+    }
+
     /** Aktuelle Karte grün (good) oder gelb bewerten; danach ist bis {@link #next} keine offen. */
     public Attempt answer(boolean good, long now) {
         if (current == null || finished) {
@@ -117,6 +124,7 @@ public final class Round {
             return false;
         }
         current = picker.next(shown, last);
+        partner = picker.pairedWith();
         shown.add(current);
         shownAt = elapsed(now);
         return true;

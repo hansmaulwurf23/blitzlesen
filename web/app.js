@@ -2,19 +2,19 @@
 // in lesen.js; gespeichert wird nur im localStorage dieses Browsers.
 
 import {
-  DEFAULT_LIST, GOOD, PRACTICE, NEW, Picker, Round,
+  DEFAULT_LIST, GOOD, PRACTICE, NEW, Picker, Round, secondsOf, pairsOf,
   total, good, practice, compareRanking, ranked, bestExcept,
   wordStats, pileOf, recentAverage, piles,
-  toJson, fromJson, merge, formatCountdown, formatSeconds,
+  toJson, fromJson, merge, formatCountdown, formatSeconds, formatDuration, difference,
 } from './lesen.js';
 
 /** Wird beim Veröffentlichen durch den Commit ersetzt (.github/workflows/pages.yml). */
 const BUILD = '__VERSION__';
-const SECONDS = 60;
 const TICK_MS = 100;
 /** So lange nach dem Aufdecken zählt kein Tipp, sonst bewertet ein Doppeltipp die nächste Karte. */
 const MIN_SHOW_MS = 350;
 const APK_URL = 'https://github.com/hansmaulwurf23/blitzlesen/releases/latest';
+const INSTAGRAM_URL = 'https://www.instagram.com/die.lernheldin/';
 
 const KEY_ROUNDS = 'lesen.runden';
 const KEY_LIST = 'lesen.liste';
@@ -283,7 +283,7 @@ function startView() {
     </header>
     <div class="scroll">
       <h2 class="headline">Blitzlesen</h2>
-      <p class="tagline">Wie viele Wörter schaffst du in einer Minute?</p>
+      <p class="tagline">Wie viele Wörter schaffst du in ${formatDuration(secondsOf(list))}?</p>
       <button class="list-pill" id="list" aria-label="Wortliste wechseln">
         ${icon('book')}<span>${esc(list.title)}</span>${lists.length > 1 ? icon('down') : ''}
       </button>
@@ -320,7 +320,7 @@ function chooseList() {
   const active = currentList();
   const d = dialog(`<h2>Wortliste</h2><ul class="lists">${lists.map((l) => `
     <li><button type="button" data-id="${esc(l.id)}" aria-pressed="${l.id === active.id}">
-      <b>${esc(l.title)}</b><span>${esc(l.description || '')}${l.description ? ' · ' : ''}${l.words.length} Wörter</span>
+      <b>${esc(l.title)}</b><span>${esc(listDetail(l))}</span>
     </button></li>`).join('')}</ul>`, [{ label: 'Schließen' }]);
   for (const b of d.querySelectorAll('[data-id]')) {
     b.onclick = () => {
@@ -331,6 +331,17 @@ function chooseList() {
       route();
     };
   }
+}
+
+/** Unter dem Titel in der Auswahl: Beschreibung, Anzahl Wörter oder Paare, abweichende Dauer. */
+function listDetail(l) {
+  const pairs = pairsOf(l).length;
+  const seconds = secondsOf(l);
+  return [
+    l.description,
+    pairs > 0 ? plural(pairs, 'Paar', 'Paare') : plural(l.words.length, 'Wort', 'Wörter'),
+    seconds === 60 ? '' : seconds % 60 === 0 ? `${seconds / 60} Min.` : `${seconds} s`,
+  ].filter(Boolean).join(' · ');
 }
 
 // ------------------------------------------------------------------ Menü
@@ -442,10 +453,10 @@ function showAbout() {
     <img src="icons/favicon.svg" alt="">
     <div class="name">Lesen</div>
     <p class="built">Built by Martin and Claude with ❤️</p>
-    <p class="based">Basierend auf der Wortkartei „Blitzlesen – 100 häufige Wörter“ von Die Lernheldin
-@die.lernheldin
+    <p class="based">Idee und Wortlisten von Die Lernheldin: die Wortkartei „Blitzlesen – 100 häufige Wörter“ und die „Minimalpaare zum Blitzlesen“.
+<a href="${INSTAGRAM_URL}" target="_blank" rel="noopener" class="nowrap">@die.lernheldin</a> auf Instagram
 
-Wortliste aus dem Grundwortschatz für Berlin (Fassung 2025).
+Die 100 Wörter stammen aus dem Grundwortschatz für Berlin (Fassung 2025).
 
 Alles bleibt in diesem Browser, ohne Anmeldung. Für Android gibt es Lesen auch als <a href="${APK_URL}" target="_blank" rel="noopener">App</a>.</p>
     <p class="version">Version: ${esc(version)}</p>
@@ -456,8 +467,9 @@ Alles bleibt in diesem Browser, ohne Anmeldung. Für Android gibt es Lesen auch 
 
 function roundView() {
   const list = currentList();
-  const picker = new Picker(list.words, piles(wordStats(rounds, list.words)));
-  const round = new Round(SECONDS * 1000, picker);
+  const seconds = secondsOf(list);
+  const picker = new Picker(list.words, piles(wordStats(rounds, list.words)), Math.random, pairsOf(list));
+  const round = new Round(seconds * 1000, picker);
   // countdown, playing, animating, paused, done
   let phase = 'paused';
   let abortDialog = null;
@@ -590,12 +602,19 @@ function roundView() {
       }
     }
     phase = 'playing';
-    showCard(round.current);
+    showCard();
   }
 
-  function showCard(text) {
+  /** Die aktuelle Karte; beim Gegenwort eines Paars ist der Unterschied zum ersten farbig. */
+  function showCard() {
     cardShownAt = performance.now();
-    word.textContent = text;
+    const text = round.current;
+    if (round.partner === null) {
+      word.textContent = text;
+    } else {
+      const [from, to] = difference(text, round.partner);
+      word.innerHTML = `${esc(text.slice(0, from))}<mark>${esc(text.slice(from, to))}</mark>${esc(text.slice(to))}`;
+    }
     word.style.fontSize = '';
     card.style.visibility = 'visible';
     fitWord();
@@ -649,7 +668,7 @@ function roundView() {
     flight = null;
     if (round.next(performance.now())) {
       phase = 'playing';
-      showCard(round.current);
+      showCard();
     } else {
       finish();
     }
@@ -679,7 +698,7 @@ function roundView() {
     const record = {
       id: uuid(),
       timestamp: Date.now(),
-      seconds: SECONDS,
+      seconds,
       list: list.id,
       attempts: [...round.attempts],
     };
@@ -771,7 +790,7 @@ function resultView(id) {
     <div class="scroll result">
       <h2>${share >= 0.8 ? 'Super gemacht!' : share >= 0.5 ? 'Gut gemacht!' : 'Weiter üben!'}</h2>
       <div class="total" id="total">${n}</div>
-      <div class="total-label">Wörter in einer Minute${list && lists.length > 1 ? ` · ${esc(list.title)}` : ''}</div>
+      <div class="total-label">Wörter in ${formatDuration(round.seconds)}${list && lists.length > 1 ? ` · ${esc(list.title)}` : ''}</div>
       <div class="piles">
         ${pileHtml(GOOD, good(round), false)}
         ${pileHtml(PRACTICE, practice(round), false)}

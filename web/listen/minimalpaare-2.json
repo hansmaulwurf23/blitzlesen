@@ -1,0 +1,20 @@
+{
+  "id": "minimalpaare-2",
+  "title": "Minimalpaare 2",
+  "description": "Genau hinschauen – mehr Buchstaben, ähnliche Wortbilder",
+  "source": "Minimalpaare zum Blitzlesen von Die Lernheldin (@die.lernheldin), Lesematerial aus ihrem Padlet",
+  "seconds": 120,
+  "words": [
+    "Tanne", "Kanne", "Wanne", "Tasse", "Kasse", "Puppe", "Suppe", "Ratte", "Matte",
+    "Rabe", "Gabe", "Gabel", "Kabel", "Leiter", "Reiter", "Lunge", "Zunge", "Wiese",
+    "Riese", "Biene", "Miene", "Karte", "Warte", "Katze", "Tatze", "Torte", "Sorte",
+    "Kiste", "Liste", "Brille", "Grille", "Gras", "Glas", "Preis", "Kreis"
+  ],
+  "pairs": [
+    ["Tanne", "Kanne"], ["Tanne", "Wanne"], ["Tasse", "Kasse"], ["Puppe", "Suppe"],
+    ["Ratte", "Matte"], ["Rabe", "Gabe"], ["Gabel", "Kabel"], ["Leiter", "Reiter"],
+    ["Lunge", "Zunge"], ["Wiese", "Riese"], ["Biene", "Miene"], ["Karte", "Warte"],
+    ["Katze", "Tatze"], ["Torte", "Sorte"], ["Kiste", "Liste"], ["Brille", "Grille"],
+    ["Gras", "Glas"], ["Preis", "Kreis"]
+  ]
+}

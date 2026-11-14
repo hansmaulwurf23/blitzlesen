@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -34,12 +37,12 @@ import de.noisebleed.lesen.words.WordList;
 import de.noisebleed.lesen.words.WordLists;
 
 /**
- * Eine Minute Blitzlesen: zufällige Karten, nach jeder tippt man Grün ("kann ich") oder Gelb
- * ("hakt noch"). Die Karte fliegt auf ihren Stapel, die nächste springt herein.
+ * Eine Runde Blitzlesen (meist eine Minute, je nach Liste): zufällige Karten, nach jeder tippt man
+ * Grün ("kann ich") oder Gelb ("hakt noch"). Die Karte fliegt auf ihren Stapel, die nächste springt
+ * herein. Bei Minimalpaaren ist auf der zweiten Karte eines Paars der Unterschied farbig.
  */
 public class RoundActivity extends AppCompatActivity {
 
-    public static final int SECONDS = 60;
     private static final long TICK_MS = 100;
     /**
      * So lange nach dem Aufdecken zählt kein Tipp: sonst bewertet ein versehentlicher Doppeltipp die
@@ -102,8 +105,9 @@ public class RoundActivity extends AppCompatActivity {
 
         History history = HistoryStore.load(this);
         list = WordLists.current(this);
-        Picker picker = new Picker(list.words, History.piles(history.wordStats(list.words)), random);
-        round = new Round(SECONDS * 1000L, picker);
+        Picker picker = new Picker(list.words, History.piles(history.wordStats(list.words)), random,
+                list.pairs);
+        round = new Round(list.seconds * 1000L, picker);
         updateCounts();
         updateTimer();
     }
@@ -181,14 +185,23 @@ public class RoundActivity extends AppCompatActivity {
             }
         }
         phase = Phase.PLAYING;
-        showCard(round.current());
+        showCard();
     }
 
     // ---------------------------------------------------------------- Karten
 
-    private void showCard(String text) {
+    private void showCard() {
         cardShownAt = SystemClock.elapsedRealtime();
-        word.setText(text);
+        String text = round.current();
+        if (round.partner() == null) {
+            word.setText(text);
+        } else {
+            int[] diff = Format.difference(text, round.partner());
+            SpannableString marked = new SpannableString(text);
+            marked.setSpan(new ForegroundColorSpan(ContextCompat.getColor(this, R.color.accent)),
+                    diff[0], diff[1], Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            word.setText(marked);
+        }
         card.setVisibility(View.VISIBLE);
         card.setTranslationX(0);
         card.setTranslationY(0);
@@ -231,7 +244,7 @@ public class RoundActivity extends AppCompatActivity {
         }
         if (round.next(SystemClock.elapsedRealtime())) {
             phase = Phase.PLAYING;
-            showCard(round.current());
+            showCard();
         } else {
             finishRound();
         }
@@ -273,7 +286,7 @@ public class RoundActivity extends AppCompatActivity {
         phase = Phase.DONE;
         handler.removeCallbacksAndMessages(null);
         RoundRecord record = new RoundRecord(UUID.randomUUID().toString(), System.currentTimeMillis(),
-                SECONDS, list.id, new ArrayList<>(round.attempts()));
+                list.seconds, list.id, new ArrayList<>(round.attempts()));
         try {
             HistoryStore.add(this, record);
         } catch (IOException e) {

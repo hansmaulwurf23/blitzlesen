@@ -16,6 +16,28 @@ export const WEIGHT_NEW = 3;
 /** Für den Durchschnitt zählen nur die letzten paar Male, damit Fortschritt sichtbar wird. */
 export const RECENT = 5;
 
+// ------------------------------------------------------------------ Wortlisten
+
+/** Rundendauer, wenn die Liste nichts anderes sagt. */
+export const DEFAULT_SECONDS = 60;
+
+/** Rundendauer einer Liste in Sekunden: "seconds" aus der Datei, sonst eine Minute. */
+export function secondsOf(list) {
+  const s = list?.seconds;
+  return Number.isInteger(s) && s > 0 ? s : DEFAULT_SECONDS;
+}
+
+/**
+ * Die Paare einer Liste (Minimalpaare): nur solche aus zwei verschiedenen Wörtern, die beide in
+ * "words" stehen. Ohne "pairs" leer, dann wird Wort für Wort gezogen.
+ */
+export function pairsOf(list) {
+  if (!Array.isArray(list?.pairs)) return [];
+  const words = new Set(list.words);
+  return list.pairs.filter((p) => Array.isArray(p) && p.length === 2 && p[0] !== p[1]
+    && words.has(p[0]) && words.has(p[1]));
+}
+
 // ------------------------------------------------------------------ Karten ziehen
 
 /**
@@ -23,17 +45,37 @@ export const RECENT = 5;
  * als grüne. Innerhalb einer Runde wiederholt sich kein Wort, solange es noch ungezeigte gibt,
  * und nie zweimal direkt hintereinander.
  *
+ * Mit Paaren wird stattdessen ein Paar gezogen, gewichtet nach seinem schwächeren Wort, und beide
+ * Wörter kommen direkt nacheinander, in zufälliger Reihenfolge. Kein Paar wiederholt sich, solange
+ * es noch Paare mit ungezeigten Wörtern gibt; danach kommt kein Paar mit dem gerade gelesenen Wort.
+ *
  * piles: Map Wort → Stapel zu Beginn der Runde; fehlende Wörter gelten als neu.
  * random: () => [0, 1)
  */
 export class Picker {
-  constructor(words, piles, random = Math.random) {
+  constructor(words, piles, random = Math.random, pairs = []) {
     this.words = words;
     this.piles = piles;
     this.random = random;
+    this.pairs = pairs;
+    /** Das zweite Wort des laufenden Paars, bis es gezogen ist: [erstes, zweites]. */
+    this.pending = null;
+    /** Nach next(): das erste Wort des Paars, wenn die gezogene Karte sein Gegenwort ist. */
+    this.pairedWith = null;
   }
 
   next(shown, last) {
+    this.pairedWith = null;
+    if (this.pending !== null) {
+      const [first, second] = this.pending;
+      this.pending = null;
+      this.pairedWith = first;
+      return second;
+    }
+    return this.pairs.length > 0 ? this.nextPair(shown, last) : this.nextWord(shown, last);
+  }
+
+  nextWord(shown, last) {
     let candidates = this.words.filter((w) => !shown.has(w));
     if (candidates.length === 0) {
       candidates = this.words.filter((w) => w !== last);
@@ -41,11 +83,31 @@ export class Picker {
     if (candidates.length === 0) {
       return this.words[0];
     }
-    const total = candidates.reduce((sum, w) => sum + this.weight(w), 0);
+    return this.pick(candidates, (w) => this.weight(w));
+  }
+
+  nextPair(shown, last) {
+    let candidates = this.pairs.filter(([a, b]) => !shown.has(a) || !shown.has(b));
+    if (candidates.length === 0) {
+      candidates = this.pairs.filter(([a, b]) => a !== last && b !== last);
+    }
+    if (candidates.length === 0) {
+      candidates = this.pairs;
+    }
+    const pair = this.pick(candidates, ([a, b]) => Math.max(this.weight(a), this.weight(b)));
+    let [first, second] = this.random() < 0.5 ? pair : [pair[1], pair[0]];
+    if (first === last) [first, second] = [second, first];
+    this.pending = [first, second];
+    return first;
+  }
+
+  /** Eines aus candidates, mit Wahrscheinlichkeit proportional zu weightOf. */
+  pick(candidates, weightOf) {
+    const total = candidates.reduce((sum, c) => sum + weightOf(c), 0);
     let r = Math.floor(this.random() * total);
-    for (const w of candidates) {
-      r -= this.weight(w);
-      if (r < 0) return w;
+    for (const c of candidates) {
+      r -= weightOf(c);
+      if (r < 0) return c;
     }
     return candidates[candidates.length - 1];
   }
@@ -73,6 +135,8 @@ export class Round {
     this.banked = 0;
     this.runningSince = -1;
     this.current = null;
+    /** Bei Paaren: das Wort direkt davor, wenn current sein Gegenwort ist, sonst null. */
+    this.partner = null;
     this.last = null;
     this.shownAt = 0;
     this.started = false;
@@ -133,6 +197,7 @@ export class Round {
       return false;
     }
     this.current = this.picker.next(this.shown, this.last);
+    this.partner = this.picker.pairedWith ?? null;
     this.shown.add(this.current);
     this.shownAt = this.elapsed(now);
     return true;
@@ -284,6 +349,29 @@ export function merge(rounds, other) {
 export function formatCountdown(millis) {
   const seconds = Math.ceil(millis / 1000);
   return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
+}
+
+/** Rundendauer für Sätze wie "Wörter in …": "einer Minute", "zwei Minuten", "90 Sekunden". */
+export function formatDuration(seconds) {
+  if (seconds === 60) return 'einer Minute';
+  if (seconds % 60 === 0) {
+    const minutes = seconds / 60;
+    return `${['', '', 'zwei', 'drei', 'vier', 'fünf'][minutes] || minutes} Minuten`;
+  }
+  return `${seconds} Sekunden`;
+}
+
+/**
+ * Was word von other unterscheidet, als [Anfang, Ende) in word: alles zwischen dem gemeinsamen
+ * Anfang und dem gemeinsamen Ende. Haus → Maus: [0, 1) ("M"), Kuh → Schuh: [0, 3) ("Sch").
+ */
+export function difference(word, other) {
+  const max = Math.min(word.length, other.length);
+  let start = 0;
+  while (start < max && word[start] === other[start]) start++;
+  let end = 0;
+  while (end < max - start && word[word.length - 1 - end] === other[other.length - 1 - end]) end++;
+  return [start, word.length - end];
 }
 
 /** Lesezeit eines Wortes, z. B. "1,4 s". */

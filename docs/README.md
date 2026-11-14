@@ -10,7 +10,7 @@ aus der Kartei; die App setzt sie nur in eine spielerische Form um.
 
 ## So funktioniert's
 
-Eine Runde dauert **eine Minute**. Die App zeigt eine zufällige Karte nach der anderen, das Kind liest
+Eine Runde dauert **eine Minute** (bei den Minimalpaaren zwei). Die App zeigt eine zufällige Karte nach der anderen, das Kind liest
 das Wort vor und tippt dann selbst:
 
 - **Grün – „Kann ich!“**: Das Wort ging schon flüssig.
@@ -64,6 +64,10 @@ Wörter kehren regelmäßig wieder.
   wieder, wandert es zurück zu den Übungswörtern.
 - **Mehrere Wortlisten:** weitere Listen lassen sich ergänzen und auf dem
   Startbildschirm umschalten, jede mit eigener Bestenliste.
+- **Minimalpaare:** zwei Listen mit Wortpaaren, die sich in einem Laut unterscheiden (Haus – Maus,
+  Kuh – Schuh), ebenfalls von Die Lernheldin. Die beiden Wörter eines Paars kommen direkt
+  nacheinander, und auf der zweiten Karte ist der Unterschied farbig hervorgehoben – so wie in ihrer
+  Anleitung: ein Wort kurz zeigen, dann das passende Gegenwort lesen lassen.
 
 Die Grundidee aus der Anleitung der Kartei – kurz, regelmäßig und mit Erfolg üben, sichere und
 unsichere Wörter getrennt halten, Bekanntes an späteren Tagen wiederholen – bleibt dieselbe.
@@ -86,6 +90,8 @@ Wortlisten kommen in der App ohne Update an.
 - **Wortliste:** die 100 Häufigkeitswörter aus dem *Grundwortschatz für Berlin – Planungshilfe für
   den Rechtschreibunterricht* (Fassung 2025), in der Auswahl der Kartei.
 - **Idee und Übungsweise:** Wortkartei „Blitzlesen – 100 häufige Wörter“ von Die Lernheldin.
+- **Minimalpaare:** „Minimalpaare zum Blitzlesen“ von Die Lernheldin, die 36 Wortpaare ihrer
+  beiden Seiten als zwei Listen.
 - **Nicht übernommen:** Gestaltung, Texte und Karten-Layout der Kartei. Die App verwendet ihre eigene
   Gestaltung und die Systemschrift des Geräts.
 

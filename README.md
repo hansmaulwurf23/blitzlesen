@@ -1,9 +1,10 @@
 # Lesen
 
 Blitzlesen für Kinder: Wörter als zufällige Karteikarten, zuerst die 100 häufigsten Wörter aus dem
-Berliner Grundwortschatz. Eine Runde dauert eine Minute; nach jeder Karte tippt man **grün** („konnte
-ich schon lesen“) oder **gelb** („hakte noch etwas“). Daraus entstehen die zwei Stapel, dazu kommen
-die Lesezeit je Wort und eine Bestenliste.
+Berliner Grundwortschatz, dazu Minimalpaare (Haus – Maus). Eine Runde dauert eine Minute (bei den
+Minimalpaaren zwei); nach jeder Karte tippt man **grün** („konnte ich schon lesen“) oder **gelb**
+(„hakte noch etwas“). Daraus entstehen die zwei Stapel, dazu kommen die Lesezeit je Wort und eine
+Bestenliste.
 
 **In erster Linie eine Web-App:** <https://hansmaulwurf23.github.io/blitzlesen/> — ohne Anmeldung,
 alles bleibt im Browser, nach dem ersten Besuch auch offline, und auf dem Handy über *Zum
@@ -30,6 +31,12 @@ Eine bebilderte Kurzbeschreibung steht in [`docs/README.md`](docs/README.md).
 - **Welche Karte kommt:** zufällig, aber gelbe und neue Wörter dreimal so oft wie grüne. Innerhalb
   einer Runde wiederholt sich kein Wort, bevor alle Wörter der Liste dran waren, und nie zweimal
   hintereinander.
+- **Minimalpaare:** Hat die Liste Paare, wird ein Paar gezogen (gewichtet nach seinem schwächeren
+  Wort: ist eins gelb oder neu, kommt das Paar dreimal so oft), und beide Wörter kommen direkt
+  nacheinander, in zufälliger Reihenfolge. Auf der zweiten Karte ist farbig, was sie vom ersten Wort
+  unterscheidet (**M**aus nach Haus, **Sch**uh nach Kuh): gemeinsamer Anfang und gemeinsames Ende
+  bleiben normal. Kein Paar kommt doppelt, solange es noch Paare mit ungezeigten Wörtern gibt;
+  danach kommt kein Paar mit dem eben gelesenen Wort. Bewertet wird weiterhin jedes Wort einzeln.
 - **Stapel:** jedes Wort liegt auf dem Stapel seiner **letzten** Bewertung. Ein grünes Wort, das
   später hakt, wandert also zurück auf Gelb, und umgekehrt. Das gilt über alle Wortlisten hinweg:
   Steht „und“ in zwei Listen, ist es dasselbe Wort.
@@ -47,8 +54,9 @@ Eine bebilderte Kurzbeschreibung steht in [`docs/README.md`](docs/README.md).
 Liegt in [`web/`](web/): eine einzige Seite aus HTML, CSS und JavaScript (ES-Module), ohne Framework
 und ohne Build-Schritt.
 
-- `lesen.js`: Runde, Kartenziehen, Stapel, Bestenliste und das JSON-Format — dieselben Regeln wie
-  `game/Round`, `words/Picker` und `stats/History` der Android-App, ohne DOM.
+- `lesen.js`: Runde, Kartenziehen (auch Paare), Stapel, Bestenliste und das JSON-Format — dieselben
+  Regeln wie `game/Round`, `words/Picker` und `stats/History` der Android-App, ohne DOM. **Jede
+  Regeländerung gehört in beide Sprachen**, die Tests auf beiden Seiten prüfen dieselben Fälle.
 - `app.js`: die Bildschirme. Navigation über `#/`, `#/runde`, `#/ergebnis/<id>`,
   `#/bestenliste`, `#/woerter/<stapel>`, damit Zurück im Browser und die Android-Zurück-Geste wie
   in der App funktionieren.
@@ -114,12 +122,17 @@ kennt, bleiben gespeichert, zählen aber für keinen Stapel.
 
 ## Wortlisten
 
-Die erste Liste, `web/listen/grundwortschatz-100.json`, enthält die 100 Häufigkeitswörter aus
+Es gibt drei Listen. Die erste, `web/listen/grundwortschatz-100.json`, enthält die 100 Häufigkeitswörter aus
 *Grundwortschatz für Berlin – Planungshilfe für den Rechtschreibunterricht* (Fassung 2025,
 S. 22–23), alphabetisch, „Zeit“ als Nomen groß. Die Auswahl und die Idee mit den zwei Stapeln
 stammen aus der Wortkartei „Blitzlesen – 100 häufige Wörter“ von Die Lernheldin (@die.lernheldin);
 darauf verweist auch der About-Dialog. Die Android-App hat dieselben Wörter zusätzlich fest in
 `words/Words` eingebaut, damit sie ohne Internet und beim ersten Start funktioniert.
+
+`minimalpaare-1.json` („Kurze, vertraute Wörter“) und `minimalpaare-2.json` („Genau hinschauen“)
+enthalten je 18 Minimalpaare aus „Minimalpaare zum Blitzlesen“ von Die Lernheldin (Lesematerial
+aus ihrem Padlet, Seite 1 und 2), mit 120 Sekunden je Runde. Wörter, die in zwei Paaren stehen
+(Maus, Rose, Tanne), sind ein Wort mit einem Verlauf.
 
 **Neue Liste hinzufügen:** eine Datei `web/listen/<id>.json` anlegen und die `id` in
 `web/listen/index.json` eintragen (die Reihenfolge dort ist die Reihenfolge in der Auswahl), dann
@@ -136,27 +149,38 @@ nimmt die App die eingebaute.
   "title": "Kurzer Name für die Auswahl",
   "description": "Ein Satz, woher die Wörter kommen",
   "source": "Quelle ausführlich",
-  "words": ["Wort", "noch ein Wort"]
+  "seconds": 60,
+  "words": ["Wort", "noch ein Wort", "Mort"],
+  "pairs": [["Wort", "Mort"]]
 }
 ```
+
+- `seconds` (optional): Rundendauer, ohne Angabe 60. Die Runde speichert ihre Dauer ohnehin
+  (`seconds` im Export), Bestenliste und Rekord zählen je Liste.
+- `pairs` (optional): Minimalpaare, siehe *Bedienung*. Jedes Wort eines Paars muss auch in `words`
+  stehen; `words` bleibt Pflicht, damit die Android-App bis 1.5 die Liste als normale Liste liest
+  (sie kennt weder `pairs` noch `seconds` und spielt dort Wort für Wort eine Minute).
 
 - Die `id` (Kleinbuchstaben, Ziffern, Bindestriche) **nie ändern**: Runden merken sich ihre Liste
   über die `id`.
 - Ein Wort umzubenennen (auch nur Groß-/Kleinschreibung) trennt es von seinem bisherigen Verlauf.
   Wörter hinzufügen oder entfernen ist unproblematisch.
 - `node --test web/test/*.test.mjs` prüft, dass jede Datei im Index steht, `id` und Dateiname
-  zusammenpassen und kein Wort doppelt vorkommt.
+  zusammenpassen, kein Wort doppelt vorkommt und jedes Paar gültig ist und jedes Wort in einem Paar
+  steht.
 
 ## Android-App
 
 Die ursprüngliche App, weiterhin gepflegt und mit Selbst-Update. Seit Version 1.5 mit denselben
-Wortlisten wie die Web-App (siehe oben), der About-Dialog verlinkt die Web-App. Die Adresse der
+Wortlisten wie die Web-App (siehe oben), seit 1.6 mit Minimalpaaren und Rundendauer je Liste. Der
+About-Dialog verlinkt die Web-App. Die Adresse der
 Web-App steht in `app/build.gradle` (`WEB_URL`).
 
 - Java, Android Views (kein Compose), Material 3, minSdk 26 / targetSdk 34. Keine
   Google-Play-Dienste.
-- `game/Round`, `words/` (außer `WordLists`) und `stats/History` haben keine Android-Abhängigkeiten und sind in
-  `RoundTest`, `PickerTest` und `HistoryTest` getestet.
+- `game/Round`, `words/` (außer `WordLists`), `stats/History` und `Format` haben keine
+  Android-Abhängigkeiten und sind in `RoundTest`, `PickerTest`, `WordListTest`, `HistoryTest` und
+  `FormatTest` getestet.
 - Hochformat fest.
 
 ### Bauen und installieren
@@ -220,5 +244,6 @@ git tag -a v1.4 -m "Lesen 1.4" -m "- Was sich geändert hat" && git push origin 
 ## Lizenz
 
 Der Code steht unter der [MIT-Lizenz](LICENSE). Idee, Wortauswahl und Übungsweise stammen aus der
-Wortkartei „Blitzlesen – 100 häufige Wörter“ von Die Lernheldin (@die.lernheldin), die
-Veröffentlichung hier geschieht mit ihrem Einverständnis.
+Wortkartei „Blitzlesen – 100 häufige Wörter“ und den „Minimalpaaren zum Blitzlesen“ von Die
+Lernheldin ([@die.lernheldin](https://www.instagram.com/die.lernheldin/)), die Veröffentlichung
+hier geschieht mit ihrem Einverständnis.

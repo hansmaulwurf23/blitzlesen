@@ -45,10 +45,11 @@ public class ResultActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.title)).setText(share >= 0.8 ? R.string.result_title_great
                 : share >= 0.5 ? R.string.result_title_good : R.string.result_title_practice);
 
-        if (WordLists.hasChoice(this)) {
-            ((TextView) findViewById(R.id.words_label)).setText(getString(R.string.result_words_label_list,
-                    WordLists.find(this, round.listId()).title));
-        }
+        TextView wordsLabel = findViewById(R.id.words_label);
+        String duration = Format.duration(round.seconds);
+        wordsLabel.setText(WordLists.hasChoice(this)
+                ? getString(R.string.result_words_label_list, duration, WordLists.find(this, round.listId()).title)
+                : getString(R.string.result_words_label, duration));
 
         TextView totalView = findViewById(R.id.total);
         totalView.setText(String.valueOf(total));

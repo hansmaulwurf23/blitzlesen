@@ -8,9 +8,9 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 import {
-  DEFAULT_LIST, GOOD, PRACTICE, NEW, Picker, Round,
+  DEFAULT_LIST, GOOD, PRACTICE, NEW, Picker, Round, secondsOf, pairsOf,
   ranked, bestExcept, wordStats, pileOf, recentAverage, piles,
-  toJson, fromJson, merge, formatCountdown, formatSeconds,
+  toJson, fromJson, merge, formatCountdown, formatSeconds, formatDuration, difference,
 } from '../lesen.js';
 
 const here = (p) => fileURLToPath(new URL(p, import.meta.url));
@@ -98,6 +98,96 @@ test('gelbe und neue Wörter kommen öfter dran als grüne', () => {
   assert.ok(counts.gut < 1300, JSON.stringify(counts));
   assert.ok(counts.gelb > 2700, JSON.stringify(counts));
   assert.ok(counts.neu > 2700, JSON.stringify(counts));
+});
+
+// ------------------------------------------------------------------ Paare
+
+const PAIRS = [['Haus', 'Maus'], ['Maus', 'Laus'], ['Ball', 'Fall'], ['Kuh', 'Schuh']];
+const PAIR_WORDS = ['Haus', 'Maus', 'Laus', 'Ball', 'Fall', 'Kuh', 'Schuh'];
+const pairRound = (seed) => new Round(60_000, new Picker(PAIR_WORDS, new Map(), seeded(seed), PAIRS));
+const isPair = (a, b) => PAIRS.some(([x, y]) => (x === a && y === b) || (x === b && y === a));
+
+test('Paare: das Gegenwort kommt direkt danach, mit Verweis auf das erste', () => {
+  for (let seed = 1; seed <= 20; seed++) {
+    const r = pairRound(seed);
+    r.start(0);
+    for (let i = 0; i < 40; i++) {
+      const first = r.current;
+      assert.equal(r.partner, null, `erstes Wort ${first} ohne Partner`);
+      r.answer(true, i * 200 + 50);
+      assert.ok(r.next(i * 200 + 100));
+      const second = r.current;
+      assert.equal(r.partner, first);
+      assert.ok(isPair(first, second), `${first} – ${second} ist kein Paar`);
+      r.answer(false, i * 200 + 150);
+      assert.ok(r.next(i * 200 + 200));
+      assert.notEqual(r.current, second, 'nie zweimal hintereinander');
+    }
+  }
+});
+
+test('Paare: keins doppelt, solange es noch welche mit ungezeigten Wörtern gibt', () => {
+  for (let seed = 1; seed <= 50; seed++) {
+    const picker = new Picker(PAIR_WORDS, new Map(), seeded(seed), PAIRS);
+    const shown = new Set();
+    const seen = [];
+    let last = null;
+    // Solange es ein Paar mit einem ungezeigten Wort gibt, kommt nur so eins.
+    while (PAIRS.some(([a, b]) => !shown.has(a) || !shown.has(b))) {
+      const a = picker.next(shown, last);
+      shown.add(a);
+      const b = picker.next(shown, a);
+      shown.add(b);
+      last = b;
+      const key = [a, b].sort().join('–');
+      assert.ok(!seen.includes(key), `${key} doppelt bei Startwert ${seed}`);
+      seen.push(key);
+    }
+    assert.ok(seen.length <= PAIRS.length);
+  }
+});
+
+test('Paare: das schwächere Wort bestimmt, wie oft ein Paar drankommt', () => {
+  const piles = new Map([['Haus', GOOD], ['Maus', GOOD], ['Ball', GOOD], ['Fall', PRACTICE]]);
+  const picker = new Picker(['Haus', 'Maus', 'Ball', 'Fall'], piles, seeded(7), [['Haus', 'Maus'], ['Ball', 'Fall']]);
+  let ball = 0;
+  for (let i = 0; i < 4000; i++) {
+    const w = picker.next(new Set(), null);
+    picker.next(new Set(), w);
+    if (w === 'Ball' || w === 'Fall') ball++;
+  }
+  // Gewichte 1 : 3
+  assert.ok(ball > 2700 && ball < 3300, String(ball));
+});
+
+test('Paare aus der Liste: nur zwei verschiedene Wörter, die in der Liste stehen', () => {
+  const list = { words: ['Haus', 'Maus', 'Laus'], pairs: [['Haus', 'Maus'], ['Maus', 'Maus'], ['Maus', 'Hut'], ['Laus'], 'x'] };
+  assert.deepEqual(pairsOf(list), [['Haus', 'Maus']]);
+  assert.deepEqual(pairsOf({ words: ['a'] }), []);
+});
+
+test('Rundendauer aus der Liste, sonst eine Minute', () => {
+  assert.equal(secondsOf({ seconds: 120 }), 120);
+  assert.equal(secondsOf({}), 60);
+  assert.equal(secondsOf({ seconds: 0 }), 60);
+  assert.equal(secondsOf({ seconds: '90' }), 60);
+  assert.equal(formatDuration(60), 'einer Minute');
+  assert.equal(formatDuration(120), 'zwei Minuten');
+  assert.equal(formatDuration(600), '10 Minuten');
+  assert.equal(formatDuration(90), '90 Sekunden');
+});
+
+test('Unterschied im Gegenwort', () => {
+  const part = (a, b) => { const [s, e] = difference(a, b); return a.slice(s, e); };
+  assert.equal(part('Maus', 'Haus'), 'M');
+  assert.equal(part('Schuh', 'Kuh'), 'Sch');
+  assert.equal(part('Kuh', 'Schuh'), 'K');
+  assert.equal(part('Glas', 'Gras'), 'l');
+  assert.equal(part('Wanne', 'Tanne'), 'W');
+  assert.equal(part('Rolle', 'Wolle'), 'R');
+  assert.equal(part('See', 'Fee'), 'S');
+  assert.equal(part('Haus', 'Haus'), '');
+  assert.deepEqual(difference('aa', 'aaa'), [2, 2]);
 });
 
 // ------------------------------------------------------------------ Verlauf
@@ -212,6 +302,17 @@ test('jede Liste im Index ist gültig und ohne doppelte Wörter', () => {
       assert.equal(typeof w, 'string');
       assert.equal(w, w.trim(), `Leerzeichen um "${w}" in ${id}.json`);
       assert.ok(w.length > 0);
+    }
+    if ('seconds' in list) {
+      assert.ok(Number.isInteger(list.seconds) && list.seconds > 0, `seconds in ${id}.json`);
+    }
+    if ('pairs' in list) {
+      // Ungültige Paare würden in der App stillschweigend wegfallen.
+      assert.equal(pairsOf(list).length, list.pairs.length, `ungültiges Paar in ${id}.json`);
+      const keys = list.pairs.map((p) => [...p].sort().join('–'));
+      assert.equal(new Set(keys).size, keys.length, `doppeltes Paar in ${id}.json`);
+      const inPairs = new Set(list.pairs.flat());
+      for (const w of list.words) assert.ok(inPairs.has(w), `"${w}" in keinem Paar in ${id}.json`);
     }
   }
   // Keine Datei, die im Index fehlt (sonst erscheint sie nie).

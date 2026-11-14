@@ -48,6 +48,7 @@ import de.noisebleed.lesen.words.WordStats;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
+    private static final String INSTAGRAM_URL = "https://www.instagram.com/die.lernheldin/";
 
     private View root;
 
@@ -107,6 +108,8 @@ public class MainActivity extends AppCompatActivity {
         MaterialButton listButton = findViewById(R.id.word_list);
         listButton.setText(choice ? list.title + "  ▾" : list.title);
         listButton.setClickable(choice);
+        ((TextView) findViewById(R.id.tagline)).setText(
+                getString(R.string.tagline, Format.duration(list.seconds)));
         invalidateOptionsMenu();
 
         Map<String, WordStats> stats = history.wordStats(list.words);
@@ -172,7 +175,10 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < lists.size(); i++) {
             WordList l = lists.get(i);
             String detail = (l.description.isEmpty() ? "" : l.description + " · ")
-                    + getString(R.string.word_list_count, l.words.size());
+                    + (l.pairs.isEmpty()
+                        ? getString(R.string.word_list_count, l.words.size())
+                        : getString(R.string.word_list_pairs, l.pairs.size()))
+                    + (l.seconds == WordList.DEFAULT_SECONDS ? "" : " · " + Format.durationShort(l.seconds));
             SpannableStringBuilder text = new SpannableStringBuilder(l.title).append('\n');
             int start = text.length();
             text.append(detail);
@@ -315,15 +321,18 @@ public class MainActivity extends AppCompatActivity {
                 .show();
     }
 
+    private void openUrl(String url) {
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+        } catch (ActivityNotFoundException e) {
+            message(getString(R.string.no_browser));
+        }
+    }
+
     private void showAbout() {
         View content = getLayoutInflater().inflate(R.layout.dialog_about, null, false);
-        content.findViewById(R.id.about_web).setOnClickListener(v -> {
-            try {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(BuildConfig.WEB_URL)));
-            } catch (ActivityNotFoundException e) {
-                message(getString(R.string.no_browser));
-            }
-        });
+        content.findViewById(R.id.about_web).setOnClickListener(v -> openUrl(BuildConfig.WEB_URL));
+        content.findViewById(R.id.about_instagram).setOnClickListener(v -> openUrl(INSTAGRAM_URL));
         TextView version = content.findViewById(R.id.about_version);
         version.setText(getString(R.string.about_version,
                 BuildConfig.VERSION_NAME, BuildConfig.GIT_SHA));
